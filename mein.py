@@ -39,7 +39,7 @@ def main():
     print('  ')
     
     b = CatalogTLE()
-    b.ReadTLEsat('catalogs/catalog_2016_12_07.txt', 'ISS')
+    b.ReadTLEsat('zarya_2018_01_01_15.txt', 'ISS')
     
     
     
