@@ -4,13 +4,18 @@
 # ЧЕРНОВИК!!!
 # затем для структуры спутников сделать поля ВРЕМЯ и НОМЕРнорад
 
+#    поля класса:
+#    name
+#    line1
+#    line2
+#    JD
+#
 #    def __init__(self):
 #    def ReadTLE_sat(self, catalog_file, SatName):
 #    def ReadFullTLE(self, catalog_file):
 #    def GetLine1(self, name):
 #    def GetLine2(self, name):
-#    def GetJD(year, mon, day):
-#    def calcJD(self, name):
+#    def CalcJD(self, name):
 
 # обработать исключение, если задано несуществующее имя ИСЗ!!!!
 
@@ -19,7 +24,6 @@ class CatalogTLE:
     def __init__(self):
         ''' Инициализация, создание пустых полей
         '''
-        
         print('readtle: инициализация')
         self.name   = []
         self.line1  = []
@@ -32,8 +36,6 @@ class CatalogTLE:
         '''
         f = open(catalog_file, 'r')
 
-        print(f)
-
         # количество найденных ИСЗ в каталоге
         num_sat = 0;
 
@@ -42,11 +44,9 @@ class CatalogTLE:
             # пока не найдём нужный нам спутник
             line_name = f.readline();
 
-            print(line_name)
-
             # достигли конца файла, завершение чтения
             if len(line_name) == 0:
-                f.close
+                f.close()
                 if  (len(self.line1) == 0):
                     print('*** Неверное задание имени ИСЗ, либо имени файла!')
                 return 0
@@ -68,17 +68,15 @@ class CatalogTLE:
     def ReadFullTLE(self, catalog_file):
         ''' Полное чтение каталога TLE
         '''    
-        f = open('zarya_2018_01_01_15.txt', 'r')
-    
+        f = open(catalog_file, 'r')
     
         print(' ');
-        print('Чтение каталога FULL:');
-        print(f)
+        print('Полное чтение каталога:');
     
         while 1:
             line_name = f.readline()
             if len(line_name) == 0:
-                # достигли коца файла
+                print('ReadFull: чтение завершено, объектов: ', len(self.line1));
                 f.close()
                 break
        
@@ -87,15 +85,19 @@ class CatalogTLE:
             l2 = f.readline()
             self.line1.append(l1[2:-1])
             self.line2.append(l2[2:-1])
-
             self.JD = self.CalcJD(l1)
+
+
+    def GetName(self, num):
+        ''' По номеру записи в массиве возвращать название аппарата
+        '''    
+        return self.name[num]   
   
   
     def GetLine1(self, name):
         ''' По названию аппарата возвращать первую строку параметров его орбиты
         '''    
         num = name.index(name)
-        print(num)
         return self.line1[num]   
 
 
@@ -127,4 +129,11 @@ class CatalogTLE:
         return JD
 
 
-
+    def Status(self):
+        ''' Выводит информацию о текущем состоянии каталога
+        '''
+        
+        print('Объектов в каталоге:', len(self.name));
+        # вывести время привязки первого и последней записи в каталоге!!!
+        
+        

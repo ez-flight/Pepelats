@@ -3,11 +3,8 @@
 import readtle
 from readtle import *
 
-def main():
-# Моя первая программа на Питоне!!!
-
-    print('Hello!!!');
-
+def test1():
+    print('Тест номер один.');
 
     a = CatalogTLE()
 
@@ -29,6 +26,9 @@ def main():
     print(a.line1[2])
     print(a.line2[2])
     
+
+def test2():
+    print('Тест номер 2.');
     print(' * * *    выбор по имени спутника:     * * *');
     print('Работаем по спутнику ISS:')
     print(a.GetLine1('ede'))
@@ -40,15 +40,13 @@ def main():
     
     b = CatalogTLE()
     b.ReadTLEsat('zarya_2018_01_01_15.txt', 'ISS')
-    
-    
-    
-# a.ReadFullTLE('catalogs/catalog_2016_12_07.txt');
+        
 
-
+def main_test():
+    test1()
+    test2()
 
 
 if __name__=="__main__":
-    main()
-
+    main_test()
 
