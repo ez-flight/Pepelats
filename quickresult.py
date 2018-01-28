@@ -34,7 +34,28 @@ def getCoordinates(tlefile, timetuple = -1):
             timetuple = (time.year, time.month, time.day, time.hour,
                     time.minute, time.second + time.microsecond / 1e6)
         pos, velo = sat.propagate(*timetuple)
-        di.update({name: (pos, velo, current)})
+        di.update({name: (sat, pos, velo, current)})
     return di
 
-# def getExtroplation(tlefile):
+def getDelta(tlefile, prognosis_period = 30):
+    '''считаем положение спутника через prognosis_period дней'''
+    prognosis_period_sec = prognosis_period * 24 * 3600
+    di = getCoordinates(tlefile)
+    diFuture = {}
+    diDelta = {}
+    for satname in di:
+        timesec = di[satname][-1] + prognosis_period_sec
+        time = datetime.fromtimestamp(timesec)
+        sat = di[satname][0]
+        oldpos, oldvelo = di[satname][1], di[satname][2]
+        timetuple = (time.year, time.month, time.day, time.hour,
+            time.minute, time.second + time.microsecond / 1e6)
+        pos, velo = sat.propagate(*timetuple)
+        diFuture[satname  + '_future']  = (sat, pos, velo, timesec)
+        deltaPos = [abs(r - oldpos[i]) for i, r in enumerate(pos)]
+        deltaVelo = [abs(v - oldvelo[i]) for i, v in enumerate(velo)]
+        diDelta[satname + '_delta']  = (deltaPos, deltaVelo,
+            prognosis_period)
+    return di, diFuture, diDelta
+
+
