@@ -1,6 +1,8 @@
 from sgp4.earth_gravity import wgs72
 from sgp4.io import twoline2rv
 from datetime import *
+from math import *
+from matplotlib.pyplot import *
 
 def getSatellites(tlefile):
     '''достает из тле файла имя спутника и создает экземпляр класса
@@ -37,25 +39,29 @@ def getCoordinates(tlefile, timetuple = -1):
         di.update({name: (sat, pos, velo, current)})
     return di
 
-def getDelta(tlefile, prognosis_period = 30):
-    '''считаем положение спутника через prognosis_period дней'''
-    prognosis_period_sec = prognosis_period * 24 * 3600
-    di = getCoordinates(tlefile)
-    diFuture = {}
-    diDelta = {}
-    for satname in di:
-        timesec = di[satname][-1] + prognosis_period_sec
-        time = datetime.fromtimestamp(timesec)
-        sat = di[satname][0]
-        oldpos, oldvelo = di[satname][1], di[satname][2]
-        timetuple = (time.year, time.month, time.day, time.hour,
-            time.minute, time.second + time.microsecond / 1e6)
-        pos, velo = sat.propagate(*timetuple)
-        diFuture[satname  + '_future']  = (sat, pos, velo, timesec)
-        deltaPos = [abs(r - oldpos[i]) for i, r in enumerate(pos)]
-        deltaVelo = [abs(v - oldvelo[i]) for i, v in enumerate(velo)]
-        diDelta[satname + '_delta']  = (deltaPos, deltaVelo,
-            prognosis_period)
-    return di, diFuture, diDelta
+module = lambda vector: sqrt(sum(j ** 2 for j in vector))
 
+def getDelta(oldfile, newfile):
+    '''должно выдавать разницу между спрогнозированным по старому файлу и
+    плоученными текущими результатми из нового'''
+    print(oldfile)
+    print(newfile)
+    olddict = getCoordinates(oldfile)
+    newdict = getCoordinates(newfile)
+    diDeltas = {}
+    for satname in newdict:
+        time = newdict[satname][-1]
+        pos, velo = newdict[satname][1], newdict[satname][2]
+        timetuple = (time.year, time.month, time.day, time.hour,
+                time.minute, time.second + time.microsecond / 1e6)
+        try:
+            olddict[satname]
+        except KeyError:
+            pass
+        else:
+            prognosed_pos, prognosed_velo = olddict[satname][0].propagate(*timetuple)
+        deltaR = abs(module(pos) - module(prognosed_pos))
+        deltaV = abs(module(velo) - module(prognosed_velo))
+        diDeltas[satname] = (deltaR, deltaV)
+    return diDeltas
 
