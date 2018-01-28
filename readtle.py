@@ -59,8 +59,8 @@ class CatalogTLE:
                 l2 = f.readline()
                 
                 self.name.append(line_name[2:-1])
-                self.line1.append(l1[2:-1])
-                self.line2.append(l2[2:-1])
+                self.line1.append(l1)
+                self.line2.append(l2)
                 self.JD = self.CalcJD(l1)
   
  
@@ -83,8 +83,8 @@ class CatalogTLE:
             self.name.append(line_name[2:-1])
             l1 = f.readline()
             l2 = f.readline()
-            self.line1.append(l1[2:-1])
-            self.line2.append(l2[2:-1])
+            self.line1.append(l1)
+            self.line2.append(l2)
             self.JD = self.CalcJD(l1)
 
 
