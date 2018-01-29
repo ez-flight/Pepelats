@@ -18,6 +18,8 @@ def getSatellites(tlefile):
     for i, name in enumerate(satnames):
         j = indices[i]
         sat = twoline2rv(data[j + 1], data[j + 2], wgs72)
+        # if name[0] == '0':
+            # name = 
         di[name[:-1]] = sat
     return di
 
@@ -61,9 +63,9 @@ def getDelta(oldfile, newfile):
             pass
         else:
             prognosed_pos, prognosed_velo = olddict[satname][0].propagate(*timetuple)
-        deltaR = abs(module(pos) - module(prognosed_pos))
-        deltaV = abs(module(velo) - module(prognosed_velo))
-        diDeltas[satname] = (deltaR, deltaV)
+            deltaR = abs(module(pos) - module(prognosed_pos))
+            deltaV = abs(module(velo) - module(prognosed_velo))
+            diDeltas[satname] = (deltaR, deltaV)
     return diDeltas
 
 def getImage(diDeltas, isVelocity=False):
