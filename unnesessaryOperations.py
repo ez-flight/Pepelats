@@ -3,7 +3,7 @@ from sgp4.io import twoline2rv
 from datetime import *
 from math import *
 from matplotlib.pyplot import *
-from quickresult import *
+from manysats import *
 
 def getDelta(tlefile, prognosis_period = 30):
     '''считаем положение спутника через prognosis_period дней  и выдаем
