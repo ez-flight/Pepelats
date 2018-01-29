@@ -2,7 +2,6 @@ from sgp4.earth_gravity import wgs72 as earth
 from sgp4.io import twoline2rv
 from datetime import *
 from math import *
-from matplotlib.pyplot import *
 import numpy as np
 from manysats import module
 
