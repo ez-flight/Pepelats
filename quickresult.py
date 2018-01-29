@@ -3,6 +3,7 @@ from sgp4.io import twoline2rv
 from datetime import *
 from math import *
 from matplotlib.pyplot import *
+import numpy as np
 
 def getSatellites(tlefile):
     '''достает из тле файла имя спутника и создает экземпляр класса
@@ -50,7 +51,7 @@ def getDelta(oldfile, newfile):
     newdict = getCoordinates(newfile)
     diDeltas = {}
     for satname in newdict:
-        time = newdict[satname][-1]
+        time = datetime.fromtimestamp(newdict[satname][-1])
         pos, velo = newdict[satname][1], newdict[satname][2]
         timetuple = (time.year, time.month, time.day, time.hour,
                 time.minute, time.second + time.microsecond / 1e6)
@@ -64,4 +65,19 @@ def getDelta(oldfile, newfile):
         deltaV = abs(module(velo) - module(prognosed_velo))
         diDeltas[satname] = (deltaR, deltaV)
     return diDeltas
+
+def getImage(diDeltas, isVelocity=False):
+    '''рисуем гистограммки'''
+    style.use('presentation.mplstyle')
+    rax = subplot(111)
+    x = [diDeltas[j][isVelocity] for j in diDeltas if np.isfinite(diDeltas[j][isVelocity])]
+    rax.hist(np.log10(x), 75, normed=True)
+    rax.grid(which='major')
+    if isVelocity:
+        vax.set_xlabel(r'$\log_{10}\left(\Delta V\right)$')
+        vax.set_ylabel(r'$P(\log_{10}\left( \Delta V\right))$')
+    else:
+        rax.set_xlabel(r'$\log_{10}\left(\Delta R\right)$')
+        rax.set_ylabel(r'$P(\log_{10}\left( \Delta R\right))$')
+    return rax
 
