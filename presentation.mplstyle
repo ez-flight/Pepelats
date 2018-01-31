@@ -1,0 +1,32 @@
+font.family : sans-serif
+font.weight : bold
+font.size : 24
+axes.titlesize : 24
+axes.labelsize : 24
+axes.facecolor : none
+lines.linewidth : 5
+lines.markersize : 8
+xtick.labelsize : 16
+ytick.labelsize : 16
+text.usetex : True
+text.latex.unicode : True
+text.latex.preamble : \usepackage{inputenc}, \usepackage[T2A]{fontenc}, \usepackage[russian]{babel}
+legend.loc : best
+legend.fontsize : 24
+xtick.minor.size : 1
+ytick.minor.size : 1
+xtick.minor.visible : True
+ytick.minor.visible : True
+xtick.direction : inout
+ytick.direction : inout
+ytick.color : k
+grid.alpha : 0.7
+grid.linestyle: --
+savefig.transparent: True
+savefig.bbox: tight
+figure.figsize: 10.0, 8.0
+figure.subplot.left    : 0.15  # the left side of the subplots of the figure
+figure.subplot.right   : 0.95    # the right side of the subplots of the figure
+figure.subplot.bottom  : 0.15    # the bottom of the subplots of the figure
+figure.subplot.top     : 0.85
+figure.subplot.hspace  : 0.50
