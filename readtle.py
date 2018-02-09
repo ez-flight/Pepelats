@@ -13,8 +13,10 @@
 #    def __init__(self):
 #    def ReadTLE_sat(self, catalog_file, SatName):
 #    def ReadFullTLE(self, catalog_file):
+#    def Status(self):
 #    def GetLine1(self, name):
 #    def GetLine2(self, name):
+#    def GetJD(self, name):
 #    def CalcJD(self, name):
 
 # обработать исключение, если задано несуществующее имя ИСЗ!!!!
@@ -28,7 +30,7 @@ class CatalogTLE:
         self.name   = []
         self.line1  = []
         self.line2  = []
-        self.date   = []
+        self.JD     = []
 
 
     def ReadTLEsat(self, catalog_file, SatName):
@@ -61,7 +63,7 @@ class CatalogTLE:
                 self.name.append(line_name[2:-1])
                 self.line1.append(l1)
                 self.line2.append(l2)
-                self.JD = self.CalcJD(l1)
+                self.JD.append(self.CalcJD(l1))
   
  
  
@@ -85,7 +87,7 @@ class CatalogTLE:
             l2 = f.readline()
             self.line1.append(l1)
             self.line2.append(l2)
-            self.JD = self.CalcJD(l1)
+            self.JD.append(self.CalcJD(l1))
 
 
     def GetName(self, num):
@@ -108,6 +110,13 @@ class CatalogTLE:
         return self.line2[num]   
 
 
+    def GetJD(self, name):
+        ''' По названию аппарата возвращать временнУю привязку его эфемерид
+        '''
+        num = name.index(name)
+        return self.JD[num]
+
+
     def CalcJD(self, line_str):
         ''' По данным первой строки вычисляет MJD привязки эфемерид спутника
         '''
@@ -116,9 +125,9 @@ class CatalogTLE:
             year =+ 2000
         else:
             year =+ 1900
-            
+
         n_day = float(line_str[21:32])
-        
+
         # юлианская дата на 1 января текущего года
         mon = 1
         day = 1
