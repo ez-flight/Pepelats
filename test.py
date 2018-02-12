@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 from sgp4.earth_gravity import wgs72
 from sgp4.io import twoline2rv
@@ -140,11 +141,51 @@ def test4():
         print('  - - - - - - - - - - - - - - - - - ')
 
 
+def test5():
+    ''' Тест прототипа наших вычислений, вычитания положения
+        из первого и последущих положений "большие интервалы"
+    '''
+
+    print(' ')
+    print('  Т Е С Т  5  ')
+    print(' ')
+
+    catalog = CatalogTLE()
+    catalog.ReadTLEsat('zarya_2018_01_01_15.txt', 'ISS')
+
+
+    line1 = catalog.line1[0]
+    line2 = catalog.line2[0]
+
+    sat_0 = twoline2rv(line1, line2, wgs72)
+    time_0 = catalog.JD[0]
+
+    x_0, v_0 = sgp4(sat_0, 0)
+
+    for numsat in range(1, 10):
+        # формирование массива данных рассчётов
+
+        line1 = catalog.line1[numsat]
+        line2 = catalog.line2[numsat]
+
+        sat_i = twoline2rv(line1, line2, wgs72)
+
+        print(catalog.JD[numsat])
+
+        dT = (catalog.JD[numsat] - time_0) *24*60
+
+        x_i, v_i = sgp4(sat_i, dT)
+
+        print(dT)
+        print(x_i[0] - x_0[0])
+
+
 def main_test():
     test1()
     test2()
     test3()
     test4()
+    test5()
 
 
 
