@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import math
+from math import pi
+
 from sgp4.earth_gravity import wgs72
 from sgp4.io import twoline2rv
 
@@ -8,6 +11,9 @@ from sgp4.propagation import sgp4
 
 import readtle
 from readtle import *
+
+import KeplerOrbit
+from KeplerOrbit import *
 
 
 def test1():
@@ -178,6 +184,25 @@ def test5():
 
         print(dT)
         print(x_i[0] - x_0[0])
+        
+        
+def test_kepler():
+    '''  Тест работы Кеплера
+    '''
+        
+    print('  ТЕСТ   кеплер ')
+      
+    ephem = KeplerOrbit(7000, 0.1, 1/180*pi, 0, 0, 0)
+        
+    ephem.dispEphem()       
+    ephem.dispXYZ(0)
+    ephem.dispXYZ(10)
+    ephem.dispXYZ(50)
+    ephem.dispXYZ(500)
+    ephem.dispXYZ(1500)
+    ephem.dispXYZ(3000)
+    ephem.dispXYZ(4500)
+    ephem.dispXYZ(6000)
 
 
 def main_test():
@@ -185,8 +210,8 @@ def main_test():
     test2()
     test3()
     test4()
-    test5()
-
+    test5()    
+    test_kepler()
 
 
 
