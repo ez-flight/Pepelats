@@ -193,6 +193,8 @@ def test_kepler():
     print('  ТЕСТ   кеплер ')
       
     ephem = KeplerOrbit(7000, 0.1, 1/180*pi, 0, 0, 0)
+
+#    x, y, z, x1, y1, z1 = 
         
     ephem.dispEphem()       
     ephem.dispXYZ(0)

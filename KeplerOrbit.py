@@ -6,12 +6,21 @@ from math import *
 
 
 # попытка сделать класс для кеплеровых элементов орбит
+#
+#
+#  такие функции:
+#  def  ephem2xyz(self, dt):
+#  def  xyz2ephem(self, x, y, z, x1, y1, z1):
+#  def  dispXYZ(self, dT):
+#  def  dispXYZ1(self, dT):
+#  def  dispEphem(self):
+#  def  __init__(self, a = 0, e = 0, i = 0, d = 0, w = 0, m_0 = 0):
+
 
 
 class KeplerOrbit:
 
     mu = 398600.44150;
-
 
     def __init__(self, a = 0, e = 0, i = 0, d = 0, w = 0, m_0 = 0):
         ''' Инициализация
@@ -28,14 +37,21 @@ class KeplerOrbit:
     def dispEphem(self):
         ''' Вывод на экран эфемерид
         '''
-        print(self.semimajor_axis, self.eccentricity, self.inclination)
+        print("a = {0:.2f}  e = {1:.3f}  i = {2:.3f}  d = {3:.3f}  w = {4:.3f}  M_0 = {5:.3f}".format(self.semimajor_axis, self.eccentricity, self.inclination, self.draco, self.omega, self.M_0))
 
 
     def dispXYZ(self, dT):
         ''' Вывод на экран прямоугольных координат
         '''
         x, y, z, x1, y1, z1 = self.ephem2xyz(dT)
-        print(x, y, z)
+        print("X = {0:9.3f} Y = {1:9.3f}  Z = {2:9.3f}".format(x, y, z))
+
+
+    def dispXYZ1(self, dT):
+        ''' Вывод на экран составляющих прямоугольных скоростей
+        '''
+        x, y, z, x1, y1, z1 = self.ephem2xyz(dT)
+        print("X1= {0:9.3f} Y1= {1:9.3f}  Z1= {2:9.3f}".format(x1, y1, z1))
 
 
     def xyz2ephem(self, x, y, z, x1, y1, z1):
@@ -149,7 +165,7 @@ class KeplerOrbit:
         elif sin_E <= 0:
             E = 2*pi - acos(cos_E)
         else:
-            warning('Фантастика!!! Ошибка в функции XYZ_Efem!')
+            print('Фантастика!!! Ошибка в функции XYZ_Efem!')
             E = 0
             sin_E = 0
 
@@ -241,3 +257,12 @@ class KeplerOrbit:
         
         return X, Y, Z, X1, Y1, Z1
 
+
+    def get_T(self):
+        ''' Вычисляет и возвращает период обращения спутника
+            в секундах
+        '''
+        a = self.semimajor_axis;
+        n = sqrt(mu) / ( a * sqrt(a) )
+        T = 2*pi / n
+        return n
