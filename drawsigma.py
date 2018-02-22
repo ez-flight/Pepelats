@@ -8,36 +8,20 @@ from sgp4.propagation import sgp4
 import readtle
 from readtle import *
 
-from tkinter import *
-from tkinter.filedialog import *
+# from tkinter import *
+# from tkinter.filedialog import *
 
-from matplotlib.pyplot import *
+from matplotlib.pyplot import plot
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import numpy as np
 
-from pylab import *
-
-
-global sat_name
-global catalog
-
-def openfile():
-    global sat_name
-    global catalog
-
-    file_open = askopenfilename()
-
-    sat_name = input('Введите имя спутника: ')
-
-    catalog = CatalogTLE()
-    catalog.ReadTLEsat(file_open, sat_name)
+#from pylab import *
 
 
 def draw1():
     '''  Создание графиков на коротких отрезках
     '''
 
-    global sat_name
     global catalog
 
     sig = []
@@ -69,7 +53,6 @@ def draw2():
     ''' Создание графиков "длинных" отрезков
     '''
 
-    global sat_name
     global catalog
 
     sig = []
