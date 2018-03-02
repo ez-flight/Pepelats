@@ -22,13 +22,15 @@ def btnopen_clicked():
 
     catalog = CatalogTLE()
     
-    catalog.ReadTLEsat(file_open, sat_name)
+    catalog.ReadFullTLE(file_open)
     
 
 
 def btn1_clicked():
     # корткие интервалы!
-    draw1(sat_name)
+    global catalog
+    
+    draw1(catalog)
 
     
 #def but2_clicked():
@@ -49,11 +51,12 @@ root.title("Sattelarium!")
 root.resizable(width=False, height=False)
 
 
-label1 = Label(text="Sattelarium ver 0.1", font=20, fg="blue")
+label1 = Label(root, text="Sattelarium ver 0.1", font=20, fg="blue")
 
-textbox = Text(root, font='Arial 14', wrap='word', width=15, height=5)
+textbox = Text(root) #, font='Arial 14', wrap='word', width=15, height=5)
 
-btnopen = Button(root)
+
+btnopen = Button(root, label = 'ldjflkd')
 btnopen['text'] = 'выбрать каталог'
 btnopen.bind("<Button-1>", btnopen_clicked)
 btnopen['command'] = btnopen_clicked

@@ -15,14 +15,21 @@ from matplotlib.pyplot import plot
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import numpy as np
 
-#from pylab import *
+from pylab import *
 
 
-def draw1():
+def openfile():
+    '''  что-то там открываем
+    '''
+    catalog = CatalogTLE()
+    catalog.ReadFullTLE('zarya_2018_01_01_15.txt')
+    
+    return catalog
+
+
+def draw1(catalog):
     '''  Создание графиков на коротких отрезках
     '''
-
-    global catalog
 
     sig = []
     for numsat in range(0, len(catalog.line1) - 1):
@@ -49,11 +56,9 @@ def draw1():
     show()
 
 
-def draw2():
+def draw2(catalog):
     ''' Создание графиков "длинных" отрезков
     '''
-
-    global catalog
 
     sig = []
 
@@ -80,9 +85,9 @@ def draw2():
 
 
 def main():
-    openfile()
-    draw1()
-    draw2()
+    catalog = openfile()
+    draw1(catalog)
+    draw2(catalog)
 
 
 if __name__ == "__main__":
