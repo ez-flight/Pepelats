@@ -6,13 +6,19 @@ from tkinter import *
 
 from tkinter.filedialog import * 
 
-from drawsigma import *
+from readtle import CatalogTLE
+
+from drawsigma import draw1
+from drawsigma import draw2
+
 
 global catalog
 
 global sat_name
 
+
 def btnopen_clicked():
+    # диалоговое окно открытия файла
     global catalog
     global sat_name
     
@@ -23,25 +29,23 @@ def btnopen_clicked():
     catalog = CatalogTLE()
     
     catalog.ReadFullTLE(file_open)
-    
 
 
 def btn1_clicked():
     # корткие интервалы!
     global catalog
-    
     draw1(catalog)
 
     
-#def but2_clicked():
-#    print("Hello World!")
+def btn2_clicked():
+    # длинные интервалы
+    global catalog
+    draw2(catalog)
 
 
 def close():
     root.destroy()
     root.quit()
-
-
 
 
 root = Tk()
@@ -53,14 +57,12 @@ root.resizable(width=False, height=False)
 
 label1 = Label(root, text="Sattelarium ver 0.1", font=20, fg="blue")
 
-textbox = Text(root) #, font='Arial 14', wrap='word', width=15, height=5)
+textbox = Text(root, font='Arial 14', wrap='word', width=25, height=10)
 
 
-btnopen = Button(root, label = 'ldjflkd')
+btnopen = Button(root)
 btnopen['text'] = 'выбрать каталог'
-btnopen.bind("<Button-1>", btnopen_clicked)
 btnopen['command'] = btnopen_clicked
-
 
 entry_sat = Entry()
 entry_sat.place(relx=.5, rely=.1, anchor="c")
@@ -71,30 +73,26 @@ btn1['command'] = btn1_clicked
 
 btn2 = Button(root)
 btn2['text'] = 'Граф. Длинные интервалы'
-# btn2['command'] = btn2_clicked
+btn2['command'] = btn2_clicked
 
-
-# первый вариант расположения
+## первый вариант расположения
 #label1.pack()
 #btnopen.pack(fill='both')
 #entry_sat.pack()
 #btn1.pack()
 #btn2.pack()
 
+## второй вариант расопложения
 label1.grid(row=0, column=0, columnspan=2)
-
 textbox.grid(row=1, column=0, rowspan=4)
-
 btnopen.grid(row=1, column=1)
 entry_sat.grid(row=2, column=1)
 btn1.grid(row=3, column=1)
 btn2.grid(row=4, column=1)
 
 
-
 root.protocol('WM_DELETE_WINDOW', close)
 
-# теперь окно будет отображено при запуске
 root.mainloop()
 
 

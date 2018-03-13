@@ -5,17 +5,13 @@ from sgp4.earth_gravity import wgs72
 from sgp4.io import twoline2rv
 from sgp4.propagation import sgp4
 
-import readtle
-from readtle import *
-
-# from tkinter import *
-# from tkinter.filedialog import *
+from readtle import CatalogTLE
 
 from matplotlib.pyplot import plot
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
-import numpy as np
+# import numpy as np
 
-from pylab import *
+from pylab import show
 
 
 def openfile():
@@ -85,8 +81,11 @@ def draw2(catalog):
 
 
 def main():
+    print('Ку! 1')
     catalog = openfile()
+    print('Ку! 2')
     draw1(catalog)
+    print('Ку! 3')
     draw2(catalog)
 
 
