@@ -8,8 +8,8 @@ from tkinter.filedialog import *
 
 from readtle import CatalogTLE
 
-from drawsigma import draw1
-from drawsigma import draw2
+from drawsigma import DrawShort
+from drawsigma import DrawLong
 
 
 global catalog
@@ -24,23 +24,23 @@ def btnopen_clicked():
     
     file_open = askopenfilename()
 
-    sat_name = entry_sat.get()
-
     catalog = CatalogTLE()
     
     catalog.ReadFullTLE(file_open)
+    
+    label_sat['text'] = catalog.name[1]
 
 
 def btn1_clicked():
-    # корткие интервалы!
+    # короткие интервалы!
     global catalog
-    draw1(catalog)
+    DrawShort(catalog)
 
     
 def btn2_clicked():
     # длинные интервалы
     global catalog
-    draw2(catalog)
+    DrawLong(catalog)
 
 
 def close():
@@ -57,15 +57,14 @@ root.resizable(width=False, height=False)
 
 label1 = Label(root, text="Sattelarium ver 0.1", font=20, fg="blue")
 
-textbox = Text(root, font='Arial 14', wrap='word', width=25, height=10)
+textbox = Text(root, font='Arial 12', wrap='word', width=25, height=10)
 
 
 btnopen = Button(root)
 btnopen['text'] = 'выбрать каталог'
 btnopen['command'] = btnopen_clicked
 
-entry_sat = Entry()
-entry_sat.place(relx=.5, rely=.1, anchor="c")
+label_sat = Label(root, text=" -- ", font=16)
 
 btn1 = Button(root)
 btn1['text'] = 'Граф. Короткие интервалы'
@@ -82,11 +81,11 @@ btn2['command'] = btn2_clicked
 #btn1.pack()
 #btn2.pack()
 
-## второй вариант расопложения
+## второй вариант расположения
 label1.grid(row=0, column=0, columnspan=2)
 textbox.grid(row=1, column=0, rowspan=4)
 btnopen.grid(row=1, column=1)
-entry_sat.grid(row=2, column=1)
+label_sat.grid(row=2, column=1)
 btn1.grid(row=3, column=1)
 btn2.grid(row=4, column=1)
 
