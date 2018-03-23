@@ -31,6 +31,9 @@ def btn_open_clicked():
     label_sat1['text'] = catalog.name[1]
     label_sat2['text'] = 'элеметов: ', len(catalog.name)
     label_sat3['text'] = 'период:', catalog.JD[-1] - catalog.JD[1]
+    
+    scale_numsat['from_'] = 1
+    scale_numsat['to'] = len(catalog.name)
 
 
 def btnShort_R_clicked():           # короткие интервалы!
@@ -47,12 +50,12 @@ def btnShort_a_clicked():
     
 def btnLong_R_clicked():            # длинные интервалы
     global catalog
-    DrawLong_R(catalog)
+    DrawLong_R(catalog, scale_numsat.get())
 
 
 def btnLong_3_clicked():
     global catalog
-    DrawLong_3(catalog)
+    DrawLong_3(catalog, scale_numsat.get())
     '''
     '''
 
@@ -72,7 +75,7 @@ root.title("Sattelarium!")
 root.resizable(width=False, height=False)
 
 
-label_main = Label(root, text="Sattelarium ver 0.1", font='GentiumAlt 24', fg="blue")
+label_main = Label(root, text="Sattelarium ver 0.1.1", font='GentiumAlt 24', fg="blue")
 
 textbox = Text(root, font='Arial 12', wrap='word', width=25, height=10)
 
@@ -84,7 +87,7 @@ btn_open = Button(root)
 btn_open['text'] = 'выбрать каталог'
 btn_open['command'] = btn_open_clicked
 
-labelShort = Label(root, text="Короткие интервалы", font='arial 12')
+labelShort = Label(root, text="Короткие.", font='arial 12')
 
 btnShort_R = Button(root)
 btnShort_R['text'] = 'Граф. (R)'
@@ -98,7 +101,10 @@ btnShort_a = Button(root)
 btnShort_a['text'] = 'Граф.  (A)'
 btnShort_a['command'] = btnShort_a_clicked
 
-labelLong = Label(root, text="Длинные интервалы", font='arial 12')
+labelLong = Label(root, text="Длинные:", font='arial 12')
+
+scale_numsat = Scale(root,orient=VERTICAL,length=250,from_=1,to=1,tickinterval=10,
+               resolution=1)
 
 btnLong_R = Button(root)
 btnLong_R['text'] = 'Граф. (R)'
@@ -114,24 +120,26 @@ btnLong_a['command'] = btnLong_a_clicked
 
 
 ##                  РАСПОЛОЖЕНИЕ
-label_main.grid(row=0,          column=0, columnspan=4)
+label_main.grid(row=0,          column=0, columnspan=5)
 
-textbox.grid(row=1,         column=0, rowspan=4)
+textbox.grid(row=1,         column=0, rowspan=5)
 
 label_sat1.grid(row=1,       column=1)
 label_sat2.grid(row=2,       column=1)
 label_sat3.grid(row=3,       column=1)
 btn_open.grid(row=4,         column=1)
 
-labelShort.grid(row=1,      column=2)
-btnShort_R.grid(row=2,      column=2)
-btnShort_3.grid(row=3,      column=2)
-btnShort_a.grid(row=4,      column=2)
+labelShort.grid(row=1,       column=2)
+btnShort_R.grid(row=2,       column=2)
+btnShort_3.grid(row=3,       column=2)
+btnShort_a.grid(row=4,       column=2)
 
-labelLong.grid(row=1,       column=3)
-btnLong_R.grid(row=2,       column=3)
-btnLong_3.grid(row=3,       column=3)
-btnLong_a.grid(row=4,       column=3)
+scale_numsat.grid(row=1,     column=3, rowspan=5)
+
+labelLong.grid(row=1,        column=4)
+btnLong_R.grid(row=2,        column=4)
+btnLong_3.grid(row=3,        column=4)
+btnLong_a.grid(row=4,        column=4)
 
 
 root.protocol('WM_DELETE_WINDOW', close)
