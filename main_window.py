@@ -8,16 +8,16 @@ from tkinter.filedialog import *
 
 from readtle import CatalogTLE
 
-from drawsigma import DrawShort
-from drawsigma import DrawLong
-
+from drawsigma import DrawShort_R
+from drawsigma import DrawLong_R
+from drawsigma import DrawLong_3
 
 global catalog
 
 global sat_name
 
 
-def btnopen_clicked():
+def btn_open_clicked():
     # диалоговое окно открытия файла
     global catalog
     global sat_name
@@ -28,20 +28,37 @@ def btnopen_clicked():
     
     catalog.ReadFullTLE(file_open)
     
-    label_sat['text'] = catalog.name[1]
+    label_sat1['text'] = catalog.name[1]
+    label_sat2['text'] = 'элеметов: ', len(catalog.name)
+    label_sat3['text'] = 'период:', catalog.JD[-1] - catalog.JD[1]
 
 
-def btn1_clicked():
-    # короткие интервалы!
+def btnShort_R_clicked():           # короткие интервалы!
     global catalog
-    DrawShort(catalog)
+    DrawShort_R(catalog)
 
+def btnShort_3_clicked():
+    '''
+    '''
+
+def btnShort_a_clicked():
+    '''
+    '''        
     
-def btn2_clicked():
-    # длинные интервалы
+def btnLong_R_clicked():            # длинные интервалы
     global catalog
-    DrawLong(catalog)
+    DrawLong_R(catalog)
 
+
+def btnLong_3_clicked():
+    global catalog
+    DrawLong_3(catalog)
+    '''
+    '''
+
+def btnLong_a_clicked():
+    '''
+    '''
 
 def close():
     root.destroy()
@@ -55,39 +72,66 @@ root.title("Sattelarium!")
 root.resizable(width=False, height=False)
 
 
-label1 = Label(root, text="Sattelarium ver 0.1", font=20, fg="blue")
+label_main = Label(root, text="Sattelarium ver 0.1", font='GentiumAlt 24', fg="blue")
 
 textbox = Text(root, font='Arial 12', wrap='word', width=25, height=10)
 
+label_sat1 = Label(root, text=" -- ", font='arial 10')
+label_sat2 = Label(root, text=" -- ", font='arial 10')
+label_sat3 = Label(root, text=" -- ", font='arial 10')
 
-btnopen = Button(root)
-btnopen['text'] = 'выбрать каталог'
-btnopen['command'] = btnopen_clicked
+btn_open = Button(root)
+btn_open['text'] = 'выбрать каталог'
+btn_open['command'] = btn_open_clicked
 
-label_sat = Label(root, text=" -- ", font=16)
+labelShort = Label(root, text="Короткие интервалы", font='arial 12')
 
-btn1 = Button(root)
-btn1['text'] = 'Граф. Короткие интервалы'
-btn1['command'] = btn1_clicked
+btnShort_R = Button(root)
+btnShort_R['text'] = 'Граф. (R)'
+btnShort_R['command'] = btnShort_R_clicked
 
-btn2 = Button(root)
-btn2['text'] = 'Граф. Длинные интервалы'
-btn2['command'] = btn2_clicked
+btnShort_3 = Button(root)
+btnShort_3['text'] = 'Граф.  (3)'
+btnShort_3['command'] = btnShort_3_clicked
 
-## первый вариант расположения
-#label1.pack()
-#btnopen.pack(fill='both')
-#entry_sat.pack()
-#btn1.pack()
-#btn2.pack()
+btnShort_a = Button(root)
+btnShort_a['text'] = 'Граф.  (A)'
+btnShort_a['command'] = btnShort_a_clicked
 
-## второй вариант расположения
-label1.grid(row=0, column=0, columnspan=2)
-textbox.grid(row=1, column=0, rowspan=4)
-btnopen.grid(row=1, column=1)
-label_sat.grid(row=2, column=1)
-btn1.grid(row=3, column=1)
-btn2.grid(row=4, column=1)
+labelLong = Label(root, text="Длинные интервалы", font='arial 12')
+
+btnLong_R = Button(root)
+btnLong_R['text'] = 'Граф. (R)'
+btnLong_R['command'] = btnLong_R_clicked
+
+btnLong_3 = Button(root)
+btnLong_3['text'] = 'Граф. (3)'
+btnLong_3['command'] = btnLong_3_clicked
+
+btnLong_a = Button(root)
+btnLong_a['text'] = 'Граф. (A)'
+btnLong_a['command'] = btnLong_a_clicked
+
+
+##                  РАСПОЛОЖЕНИЕ
+label_main.grid(row=0,          column=0, columnspan=4)
+
+textbox.grid(row=1,         column=0, rowspan=4)
+
+label_sat1.grid(row=1,       column=1)
+label_sat2.grid(row=2,       column=1)
+label_sat3.grid(row=3,       column=1)
+btn_open.grid(row=4,         column=1)
+
+labelShort.grid(row=1,      column=2)
+btnShort_R.grid(row=2,      column=2)
+btnShort_3.grid(row=3,      column=2)
+btnShort_a.grid(row=4,      column=2)
+
+labelLong.grid(row=1,       column=3)
+btnLong_R.grid(row=2,       column=3)
+btnLong_3.grid(row=3,       column=3)
+btnLong_a.grid(row=4,       column=3)
 
 
 root.protocol('WM_DELETE_WINDOW', close)

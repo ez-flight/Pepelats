@@ -71,7 +71,7 @@ def OrbitSigma(x1, v1, x2, v2):
     return sigma1, sigma2, sigma3
     
 
-def DrawShort(catalog):
+def DrawShort_R(catalog):
     '''  Создание графиков для коротких интервалов
     '''
 
@@ -104,7 +104,7 @@ def DrawShort(catalog):
     plt.show()
 
 
-def DrawLong(catalog, number = 0):
+def DrawLong_R(catalog, number = 0):
     ''' Создание графиков "длинных" интервалов
     '''
     line1 = catalog.line1[number]
@@ -134,7 +134,7 @@ def DrawLong(catalog, number = 0):
     plt.show()
 
 
-def Draw3(catalog, number = 0):
+def DrawLong_3(catalog, number = 0):
     ''' Графики модных ошибок
     '''
     
