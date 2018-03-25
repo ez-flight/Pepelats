@@ -128,9 +128,9 @@ def DrawShort_R(catalog):
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
 
-    plt.xlabel('Epoсh');
-    plt.ylabel(r'$\sigma R$');
-    plt.title(catalog.name[1]);
+    plt.xlabel('Epoсh')
+    plt.ylabel(r'$\sigma R$')
+    plt.title(catalog.name[1])
     plt.grid(True)
     plt.show()
 
@@ -158,9 +158,11 @@ def DrawLong_R(catalog, number = 0):
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
 
-    plt.xlabel('Epoсh');
-    plt.ylabel(r'$\sigma R$');
-    plt.title(catalog.name[1]);
+    plt.plot(number, 0, 'k^')
+
+    plt.xlabel('Epoсh')
+    plt.ylabel(r'$\sigma R$')
+    plt.title(catalog.name[1])
     plt.grid(True)
     plt.show()
 
@@ -246,6 +248,8 @@ def DrawLong_3(catalog, number = 0):
     plt.plot(sig2, 'kx')
     plt.plot(sig3, 'kx')
 
+    plt.plot(number, 0, 'k^')
+
     plt.xlabel('Epoсh');
     plt.ylabel(r'$\sigma R $');
     plt.title(catalog.name[1]);
@@ -313,9 +317,11 @@ def DrawLong_ephem(catalog, ephem, number = 0):
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
 
-    plt.xlabel('Epoсh');
-    plt.ylabel(s_latex);
-    plt.title(catalog.name[1]);
+    plt.plot(number, 0, 'k^')
+
+    plt.xlabel('Epoсh')
+    plt.ylabel(s_latex)
+    plt.title(catalog.name[1])
     plt.grid(True)
     plt.show()
 

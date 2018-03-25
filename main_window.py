@@ -9,9 +9,11 @@ from tkinter.filedialog import *
 from readtle import CatalogTLE
 
 from drawsigma import DrawShort_R
+from drawsigma import DrawShort_3
+from drawsigma import DrawShort_ephem
+
 from drawsigma import DrawLong_R
 from drawsigma import DrawLong_3
-from drawsigma import DrawShort_ephem
 from drawsigma import DrawLong_ephem
 
 global catalog
@@ -20,10 +22,10 @@ global sat_name
 
 
 def btn_open_clicked():
-    # диалоговое окно открытия файла
+    ''' диалоговое окно открытия файла
+    '''
     global catalog
-    global sat_name
-    
+
     file_open = askopenfilename()
 
     catalog = CatalogTLE()
@@ -34,7 +36,7 @@ def btn_open_clicked():
     label_sat2['text'] = 'период:', catalog.JD[-1] - catalog.JD[1], 'суток'
 
     scale_numsat['from_'] = 1
-    scale_numsat['to'] = len(catalog.name)
+    scale_numsat['to'] = len(catalog.name) - 1
 
 
 def btnShort_R_clicked():           # короткие интервалы!
@@ -45,27 +47,15 @@ def btnShort_R_clicked():           # короткие интервалы!
 def btnShort_3_clicked():
     '''
     '''
+    global catalog
+    DrawShort_3(catalog)
+
 
 def btnShort_ephem_clicked():
     '''
     '''
-    n_ephem = list_ephem.curselection()
-    print(n_ephem)
-    print(n_ephem[0])
-    if n_ephem[0] == 0:
-        ephem = 'a'
-    elif n_ephem[0] == 1:
-        ephem = 'e'
-    elif n_ephem[0] == 2:
-        ephem = 'i'
-    elif n_ephem[0] == 3:
-        ephem = 'draco'
-    elif n_ephem[0] == 4:
-        ephem = 'omega'
-    else:
-        ephem = 'M_0'
-
-    DrawShort_ephem(catalog, ephem)
+    ephem = list_ephem.curselection()
+    DrawShort_ephem(catalog, ephem[0])
 
     
 def btnLong_R_clicked():            # длинные интервалы
@@ -74,32 +64,17 @@ def btnLong_R_clicked():            # длинные интервалы
 
 
 def btnLong_3_clicked():
+    '''
+    '''
     global catalog
     DrawLong_3(catalog, scale_numsat.get())
-    '''
-    '''
+
 
 def btnLong_ephem_clicked():
     '''
     '''
-
-    n_ephem = list_ephem.curselection()
-    print(n_ephem)
-    print(n_ephem[0])
-    if n_ephem[0] == 0:
-        ephem = 'a'
-    elif n_ephem[0] == 1:
-        ephem = 'e'
-    elif n_ephem[0] == 2:
-        ephem = 'i'
-    elif n_ephem[0] == 3:
-        ephem = 'draco'
-    elif n_ephem[0] == 4:
-        ephem = 'omega'
-    else:
-        ephem = 'M_0'
-
-    DrawLong_ephem(catalog, ephem, scale_numsat.get())
+    ephem = list_ephem.curselection()
+    DrawLong_ephem(catalog, ephem[0], scale_numsat.get())
 
 
 def close():
@@ -114,7 +89,7 @@ root.title("Sattelarium!")
 root.resizable(width=False, height=False)
 
 
-label_main = Label(root, text="Sattelarium ver 0.1.1", font='GentiumAlt 24', fg="blue")
+label_main = Label(root, text="Sattelarium ver 0.2.0", font='GentiumAlt 24', fg="blue")
 
 textbox = Text(root, font='Arial 12', wrap='word', width=25, height=10)
 
