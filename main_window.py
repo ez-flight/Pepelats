@@ -49,8 +49,23 @@ def btnShort_3_clicked():
 def btnShort_ephem_clicked():
     '''
     '''
-    ephem = list_ephem.curselection()
-    DrawShort_ephem(catalog, ephem[0])
+    n_ephem = list_ephem.curselection()
+    print(n_ephem)
+    print(n_ephem[0])
+    if n_ephem[0] == 0:
+        ephem = 'a'
+    elif n_ephem[0] == 1:
+        ephem = 'e'
+    elif n_ephem[0] == 2:
+        ephem = 'i'
+    elif n_ephem[0] == 3:
+        ephem = 'draco'
+    elif n_ephem[0] == 4:
+        ephem = 'omega'
+    else:
+        ephem = 'M_0'
+
+    DrawShort_ephem(catalog, ephem)
 
     
 def btnLong_R_clicked():            # длинные интервалы
@@ -67,8 +82,24 @@ def btnLong_3_clicked():
 def btnLong_ephem_clicked():
     '''
     '''
-    ephem = list_ephem.curselection()
-    DrawLong_ephem(catalog, ephem[0], scale_numsat.get())
+
+    n_ephem = list_ephem.curselection()
+    print(n_ephem)
+    print(n_ephem[0])
+    if n_ephem[0] == 0:
+        ephem = 'a'
+    elif n_ephem[0] == 1:
+        ephem = 'e'
+    elif n_ephem[0] == 2:
+        ephem = 'i'
+    elif n_ephem[0] == 3:
+        ephem = 'draco'
+    elif n_ephem[0] == 4:
+        ephem = 'omega'
+    else:
+        ephem = 'M_0'
+
+    DrawLong_ephem(catalog, ephem, scale_numsat.get())
 
 
 def close():
@@ -149,6 +180,7 @@ btnShort_a.grid(row=4,      column=2)
 
 scale_numsat.grid(row=1,    column=3, rowspan=5)
 
+labelLong.grid(row=1,      column=4)
 btnLong_R.grid( row=2,      column=4)
 btnLong_3.grid( row=3,      column=4)
 btnLong_a.grid( row=4,      column=4)
