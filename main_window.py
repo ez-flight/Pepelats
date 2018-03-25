@@ -11,6 +11,8 @@ from readtle import CatalogTLE
 from drawsigma import DrawShort_R
 from drawsigma import DrawLong_R
 from drawsigma import DrawLong_3
+from drawsigma import DrawShort_ephem
+from drawsigma import DrawLong_ephem
 
 global catalog
 
@@ -28,10 +30,9 @@ def btn_open_clicked():
     
     catalog.ReadFullTLE(file_open)
     
-    label_sat1['text'] = catalog.name[1]
-    label_sat2['text'] = 'элеметов: ', len(catalog.name)
-    label_sat3['text'] = 'период:', catalog.JD[-1] - catalog.JD[1]
-    
+    label_sat1['text'] = catalog.name[1], '    [', str(len(catalog.name)), ']'
+    label_sat2['text'] = 'период:', catalog.JD[-1] - catalog.JD[1], 'суток'
+
     scale_numsat['from_'] = 1
     scale_numsat['to'] = len(catalog.name)
 
@@ -40,13 +41,32 @@ def btnShort_R_clicked():           # короткие интервалы!
     global catalog
     DrawShort_R(catalog)
 
+
 def btnShort_3_clicked():
     '''
     '''
 
-def btnShort_a_clicked():
+def btnShort_ephem_clicked():
     '''
-    '''        
+    '''
+    n_ephem = list_ephem.curselection()
+    print(n_ephem)
+    print(n_ephem[0])
+    if n_ephem[0] == 0:
+        ephem = 'a'
+    elif n_ephem[0] == 1:
+        ephem = 'e'
+    elif n_ephem[0] == 2:
+        ephem = 'i'
+    elif n_ephem[0] == 3:
+        ephem = 'draco'
+    elif n_ephem[0] == 4:
+        ephem = 'omega'
+    else:
+        ephem = 'M_0'
+
+    DrawShort_ephem(catalog, ephem)
+
     
 def btnLong_R_clicked():            # длинные интервалы
     global catalog
@@ -59,9 +79,28 @@ def btnLong_3_clicked():
     '''
     '''
 
-def btnLong_a_clicked():
+def btnLong_ephem_clicked():
     '''
     '''
+
+    n_ephem = list_ephem.curselection()
+    print(n_ephem)
+    print(n_ephem[0])
+    if n_ephem[0] == 0:
+        ephem = 'a'
+    elif n_ephem[0] == 1:
+        ephem = 'e'
+    elif n_ephem[0] == 2:
+        ephem = 'i'
+    elif n_ephem[0] == 3:
+        ephem = 'draco'
+    elif n_ephem[0] == 4:
+        ephem = 'omega'
+    else:
+        ephem = 'M_0'
+
+    DrawLong_ephem(catalog, ephem, scale_numsat.get())
+
 
 def close():
     root.destroy()
@@ -81,7 +120,12 @@ textbox = Text(root, font='Arial 12', wrap='word', width=25, height=10)
 
 label_sat1 = Label(root, text=" -- ", font='arial 10')
 label_sat2 = Label(root, text=" -- ", font='arial 10')
-label_sat3 = Label(root, text=" -- ", font='arial 10')
+
+list_ephem = Listbox(root, height=3, width=10, selectmode=SINGLE)
+list1=["a", "e", "i", "draco", "omega", "M_0"]
+for i in list1:
+    list_ephem.insert(END,i)
+list_ephem.activate(0)
 
 btn_open = Button(root)
 btn_open['text'] = 'выбрать каталог'
@@ -98,8 +142,8 @@ btnShort_3['text'] = 'Граф.  (3)'
 btnShort_3['command'] = btnShort_3_clicked
 
 btnShort_a = Button(root)
-btnShort_a['text'] = 'Граф.  (A)'
-btnShort_a['command'] = btnShort_a_clicked
+btnShort_a['text'] = 'Граф.'
+btnShort_a['command'] = btnShort_ephem_clicked
 
 labelLong = Label(root, text="Длинные:", font='arial 12')
 
@@ -115,31 +159,30 @@ btnLong_3['text'] = 'Граф. (3)'
 btnLong_3['command'] = btnLong_3_clicked
 
 btnLong_a = Button(root)
-btnLong_a['text'] = 'Граф. (A)'
-btnLong_a['command'] = btnLong_a_clicked
+btnLong_a['text'] = 'Граф.'
+btnLong_a['command'] = btnLong_ephem_clicked
 
 
 ##                  РАСПОЛОЖЕНИЕ
-label_main.grid(row=0,          column=0, columnspan=5)
+label_main.grid(row=0,      column=0, columnspan=5)
 
-textbox.grid(row=1,         column=0, rowspan=5)
+textbox.grid(   row=1,      column=0, rowspan=5)
 
-label_sat1.grid(row=1,       column=1)
-label_sat2.grid(row=2,       column=1)
-label_sat3.grid(row=3,       column=1)
-btn_open.grid(row=4,         column=1)
+label_sat1.grid(row=1,      column=1)
+label_sat2.grid(row=2,      column=1)
+btn_open.grid(  row=3,      column=1)
+list_ephem.grid(row=4,      column=1)
 
-labelShort.grid(row=1,       column=2)
-btnShort_R.grid(row=2,       column=2)
-btnShort_3.grid(row=3,       column=2)
-btnShort_a.grid(row=4,       column=2)
+labelShort.grid(row=1,      column=2)
+btnShort_R.grid(row=2,      column=2)
+btnShort_3.grid(row=3,      column=2)
+btnShort_a.grid(row=4,      column=2)
 
-scale_numsat.grid(row=1,     column=3, rowspan=5)
+scale_numsat.grid(row=1,    column=3, rowspan=5)
 
-labelLong.grid(row=1,        column=4)
-btnLong_R.grid(row=2,        column=4)
-btnLong_3.grid(row=3,        column=4)
-btnLong_a.grid(row=4,        column=4)
+btnLong_R.grid( row=2,      column=4)
+btnLong_3.grid( row=3,      column=4)
+btnLong_a.grid( row=4,      column=4)
 
 
 root.protocol('WM_DELETE_WINDOW', close)
