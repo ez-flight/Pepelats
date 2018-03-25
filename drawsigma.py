@@ -80,20 +80,26 @@ def EphemSigma(x1, v1, x2, v2, ephem):
     orbit2 = KeplerOrbit()
     orbit2.xyz2ephem(x2[0], x2[1], x2[2], v2[0], v2[1], v2[2])
 
-    if ephem == 'a':
+    if ephem == 0:
         delta = orbit2.semimajor_axis - orbit1.semimajor_axis
-    elif ephem == 'e':
+        ephem_latex = 'a (semimajor axis)'
+    elif ephem == 1:
         delta = orbit2.eccentricity - orbit1.eccentricity
-    elif ephem == 'i':
+        ephem_latex = 'e (eccentricity)'
+    elif ephem == 2:
         delta =  orbit2.inclination - orbit1.inclination
-    elif ephem == 'Draco':
+        ephem_latex = 'i (inclination)'
+    elif ephem == 3:
         delta = orbit2.draco - orbit1.draco
-    elif ephem == 'omega':
+        ephem_latex = '\Omega'
+    elif ephem == 4:
         delta = orbit2.omega - orbit1.omega
+        ephem_latex = '\omega'
     else:
         delta = orbit2.M_0 - orbit1.M_0
+        ephem_latex = 'M_0'
 
-    return delta
+    return delta, ephem_latex
 
 
 def DrawShort_R(catalog):
@@ -268,13 +274,15 @@ def DrawShort_ephem(catalog, ephem):
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
 
-        sig.append(EphemSigma(x1, v1, x2, v2, ephem))
+        s, s_latex = EphemSigma(x1, v1, x2, v2, ephem)
+
+        sig.append(s)
 
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
 
     plt.xlabel('Epoсh');
-    plt.ylabel(r'$\sigma ephem $');         # СДЕЛАТЬ отображение конкретного элемента орбиты!!!!
+    plt.ylabel(s_latex);         # СДЕЛАТЬ отображение конкретного элемента орбиты!!!!
     plt.title(catalog.name[1]);
     plt.grid(True)
     plt.show()
@@ -298,13 +306,15 @@ def DrawLong_ephem(catalog, ephem, number = 0):
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
 
-        sig.append( EphemSigma(x1, v1, x2, v2, ephem) )
+        s, s_latex = EphemSigma(x1, v1, x2, v2, ephem)
+
+        sig.append( s )
 
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
 
     plt.xlabel('Epoсh');
-    plt.ylabel('$\sigma Ephem $');      # СДЕЛАТЬ отображение конкретного элемента орбиты!!!!
+    plt.ylabel(s_latex);
     plt.title(catalog.name[1]);
     plt.grid(True)
     plt.show()
