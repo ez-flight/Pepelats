@@ -17,15 +17,14 @@ from math import *
 #  def  __init__(self, a = 0, e = 0, i = 0, d = 0, w = 0, m_0 = 0):
 
 
+mu = 398600.44150
 
 class KeplerOrbit:
-
-    mu = 398600.44150;
 
     def __init__(self, a = 0, e = 0, i = 0, d = 0, w = 0, m_0 = 0):
         ''' Инициализация
         '''
-        print('KeplerOrbit: инициализация')
+        # print('KeplerOrbit: инициализация')
         self.semimajor_axis   = a
         self.eccentricity     = e
         self.inclination  = i
@@ -159,7 +158,7 @@ class KeplerOrbit:
         #####       12      #####
         # эксцентричекая аномалия
         cos_E = (e + cos(Vi)) / (1 + e*cos(Vi))
-        sin_E = (sqrt(1-e^2) * sin_Vi) / (1 + e*cos(Vi))
+        sin_E = (sqrt(1-e*e) * sin_Vi) / (1 + e*cos(Vi))
         if  sin_E >= 0:
             E = acos(cos_E)
         elif sin_E <= 0:
@@ -171,7 +170,7 @@ class KeplerOrbit:
 
         #####       13      #####
         # Эксцентрическая аномалия:
-        M_0 = E - e*sin_E
+        m_0 = E - e*sin_E
 
         self.semimajor_axis   = a
         self.eccentricity     = e
@@ -194,7 +193,7 @@ class KeplerOrbit:
         M_0     = self.M_0
         
         # вычесляем среднее движение
-        n = sqrt(self.mu) / (a*sqrt(a))
+        n = sqrt(mu) / (a*sqrt(a))
 
         # вычисляем среднюю аномалию
         M = M_0 + n * dt
@@ -245,8 +244,8 @@ class KeplerOrbit:
         # фокальный параметр
         P = a * (1 - e**2)
 
-        V_r = sqrt(self.mu / P) * e * sin(v);
-        V_t = sqrt(self.mu * P) / r;
+        V_r = sqrt(mu / P) * e * sin(v)
+        V_t = sqrt(mu * P) / r
         # V_t = sqrt(mu/P) * (1 + e*cos(v));
 
         # XYZ(4:6) = V_r * lnm + V_t * lnm2;
@@ -266,3 +265,36 @@ class KeplerOrbit:
         n = sqrt(mu) / ( a * sqrt(a) )
         T = 2*pi / n
         return n
+
+
+def test():
+    print('Ку! This is test Kepler.')
+
+    orbit = KeplerOrbit(7000, 0.1, 0.001, 0.001, 0.001, 0.1);
+
+    print(orbit.get_T())
+
+    orbit.dispXYZ(0)
+    orbit.dispXYZ1(0)
+    orbit.dispEphem()
+
+    x, y, z, x1, y1, z1 = orbit.ephem2xyz(0)
+
+    print('--------------------------------')
+    orbit.xyz2ephem(x, y, z, x1, y1, z1)
+
+    orbit.dispEphem()
+    orbit.dispXYZ(0)
+    orbit.dispXYZ1(0)
+
+    x, y, z, x1, y1, z1 = orbit.ephem2xyz(100)
+
+    print('--------------------------------')
+    orbit.xyz2ephem(x, y, z, x1, y1, z1)
+
+    orbit.dispEphem()
+    orbit.dispXYZ(0)
+    orbit.dispXYZ1(0)
+
+if __name__ == "__main__":
+    test()
