@@ -326,6 +326,39 @@ def DrawLong_ephem(catalog, ephem, number = 0):
     plt.show()
 
 
+def testSGP():
+    ''' Тестируем чтение информации по ИСЗ + вычисление координат
+    '''
+    print('  ')
+    print('Тест SGP.');        
+ 
+    catalog = CatalogTLE()  
+    catalog.ReadTLEsat('catalogs/catalog_2016_06_30.txt', 'ISS')
+    
+    catalog.Status()
+    
+    line1 = catalog.GetLine1('ISS');
+    line2 = catalog.GetLine2('ISS');
+
+    satellite = twoline2rv(line1, line2, wgs72)
+    
+#    position, velocity = satellite.propagate(2016, 6, 30, 12, 0, 0)
+
+    position, velocity = sgp4(satellite, 10.001)
+
+    print('---   error   ---');
+    print(satellite.error)    # nonzero on error
+
+    print('---   error_message   ---:');
+    print(satellite.error_message)
+
+    print('---   position   ---');
+    print(position)
+
+    print('---   velocity   ---');
+    print(velocity)
+    
+
 def main():
     print('открытие каталога:')
     catalog = OpenFile()
@@ -344,6 +377,8 @@ def main():
     DrawShort_ephem(catalog, 'a')
     DrawLong_ephem(catalog, 'a')
     DrawLong_ephem(catalog, 'a', 10)
+    
+    testSGP()
 
 
 if __name__ == "__main__":
