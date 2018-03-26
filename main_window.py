@@ -35,7 +35,7 @@ def btn_open_clicked():
     label_sat1['text'] = catalog.name[1], '    [', str(len(catalog.name)), ']'
     label_sat2['text'] = 'период:', catalog.JD[-1] - catalog.JD[1], 'суток'
 
-    scale_numsat['from_'] = 1
+    scale_numsat['from_'] = 0
     scale_numsat['to'] = len(catalog.name) - 1
 
 
@@ -122,7 +122,7 @@ btnShort_a['command'] = btnShort_ephem_clicked
 
 labelLong = Label(root, text="Длинные:", font='arial 12')
 
-scale_numsat = Scale(root,orient=VERTICAL,length=250,from_=1,to=1,tickinterval=10,
+scale_numsat = Scale(root,orient=VERTICAL,length=250,from_=0,to=1,tickinterval=10,
                resolution=1)
 
 btnLong_R = Button(root)
