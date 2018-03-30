@@ -156,7 +156,7 @@ class CatalogTLE:
         print('Данные за следующий временной интервал:', self.JD[1], ' -- ', self.JD[-1] );
         
 
-def test1():
+def _test1():
     ''' Тестируем ReadFullTLE
     '''
     print('  ')
@@ -183,7 +183,7 @@ def test1():
     print(a.line2[2])
    
     
-def test2():
+def _test2():
     ''' Тестируем ReadTLEsat
     '''
     print('  ')
@@ -195,17 +195,13 @@ def test2():
     print('  ')
     
     b = CatalogTLE()
-    b.ReadTLEsat('zarya_2018_01_01_15.txt', 'ISS')
+    b.ReadTLEsat('catalogs/zarya_2018_01_01_15.txt', 'ISS')
     
     print('Данные по ISS:')
     print(b.GetLine1('ISS'))
     print(b.GetLine2('ISS'))
-    
-    
-def test():
-    test1()
-    test2()
-
+        
 
 if __name__=="__main__":
-    test()
+    _test1()
+    _test2()

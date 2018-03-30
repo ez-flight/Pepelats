@@ -267,7 +267,7 @@ class KeplerOrbit:
         return n
 
 
-def test():
+def _test():
     print('Ку! This is test Kepler.')
 
     orbit = KeplerOrbit(7000, 0.1, 0.001, 0.001, 0.001, 0.1);
@@ -298,4 +298,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    _test()

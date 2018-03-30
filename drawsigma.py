@@ -20,11 +20,11 @@ from mpl_toolkits.axes_grid.inset_locator import inset_axes
 # from pylab import show
 
 
-def OpenFile():
+def _OpenFile():
     '''  Открытие файла -- каталога TLE. Для тестовых функций.
     '''
     catalog = CatalogTLE()
-    catalog.ReadFullTLE('zarya_2018_01_01_15.txt')
+    catalog.ReadFullTLE('catalogs/zarya_2018_01_01_15.txt')
     
     return catalog
 
@@ -326,7 +326,7 @@ def DrawLong_ephem(catalog, ephem, number = 0):
     plt.show()
 
 
-def testSGP():
+def _testSGP():
     ''' Тестируем чтение информации по ИСЗ + вычисление координат
     '''
     print('  ')
@@ -359,9 +359,9 @@ def testSGP():
     print(velocity)
     
 
-def main():
+def _testDraw():
     print('открытие каталога:')
-    catalog = OpenFile()
+    catalog = _OpenFile()
 
     print('Графики полной ошибки:')
     DrawShort_R(catalog)
@@ -377,9 +377,8 @@ def main():
     DrawShort_ephem(catalog, 'a')
     DrawLong_ephem(catalog, 'a')
     DrawLong_ephem(catalog, 'a', 10)
-    
-    testSGP()
 
 
 if __name__ == "__main__":
-    main()
+    _testDraw()
+    _testSGP()
