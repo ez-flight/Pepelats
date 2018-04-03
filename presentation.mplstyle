@@ -20,8 +20,9 @@ ytick.minor.visible : True
 xtick.direction : inout
 ytick.direction : inout
 ytick.color : k
-grid.alpha : 0.7
-grid.linestyle: --
+grid.alpha : 1.0
+grid.color: white
+grid.linestyle: -
 savefig.transparent: True
 savefig.bbox: tight
 figure.figsize: 10.0, 8.0

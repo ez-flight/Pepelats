@@ -12,6 +12,7 @@ SHADOWCOLOR="#a9a9a9"
 BORDERCOLOR="#808080"
 HIGHLIGHTCOLOR="#5F9EA0"
 TEXTCOLOR="#484848"
+
 class MainWindow(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master, width=640, height=330,
@@ -20,6 +21,7 @@ class MainWindow(tk.Frame):
         self.addMenu()
         self.addArea()
         self.grid(sticky=tk.N + tk.S + tk.E + tk.W)
+        self.winfo_toplevel().geometry("")
 
     def addMenu(self):
         self.menubar = tk.Menu(self)
@@ -38,11 +40,11 @@ class MainWindow(tk.Frame):
         area.grid(row=0, column=0, columnspan=3, sticky="wesn")
         area.rowconfigure(0, weight=1)
         area.columnconfigure(0, weight=1)
-        area.columnconfigure(1, weight=1)
-        subarea = tk.Frame(area, width=100, height=200, bg=TEXTCOLOR)
-        subarea.grid(row=0, column=1)
-        subarea2 = tk.Frame(area, width=400, height=200, bg="orange")
-        subarea2.grid(row=0, column=0, columnspan=2)
+        area.columnconfigure(1, weight=4)
+        subarea = tk.Frame(area, width=200, height=200, bg=TEXTCOLOR)
+        subarea.grid(row=0, column=0, columnspan=2, sticky="wesn")
+        subarea2 = tk.Frame(area, width=400, height=200, bg="green")
+        subarea2.grid(row=0, column=2, sticky="wesn")
         return self
 
     def open(self):
