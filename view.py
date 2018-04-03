@@ -1,3 +1,4 @@
+from tkinter import ttk
 import tkinter as tk
 import matplotlib
 matplotlib.use("TkAgg")
@@ -6,6 +7,7 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as mpl
 from math import *
 import numpy as np
+
 from readtle import CatalogTLE
 from processingCenter import *
 
@@ -35,7 +37,8 @@ class MainWindow(tk.Frame):
     def addMenu(self):
         self.menubar = tk.Menu(self)
         self.menubar.add_command(label="Выбрать каталог", command=self.open)
-        self.menubar.config(bg=BASECOLOR, fg=TEXTCOLOR)
+        self.menubar.add_separator()
+        self.menubar.config(bg=BASECOLOR, fg=TEXTCOLOR, activeborderwidth=3)
         self.master.config(menu=self.menubar)
         top = self.winfo_toplevel()
         top.rowconfigure(0, weight=1)
@@ -57,6 +60,8 @@ class MainWindow(tk.Frame):
         self._workArea.rowconfigure(0, weight=1)
         self._workArea.columnconfigure(0, weight=1)
         return self
+parameters = ['sin', 'cos', '2 cos', '2 sin']
+signalos = {'sin': np.sin, 'cos': np.cos, '2 cos': lambda x: 2 * np.cos(x), '2 sin': lambda x: 2 * np.sin(x)}
 
 class Work(tk.Frame):
     def __init__(self, master):
@@ -64,6 +69,7 @@ class Work(tk.Frame):
                           height=MAINHEIGHT, bg=BASECOLOR, bd=1,
                           relief=tk.FLAT)
         self._master = master
+        self.parameter = 'sin'
         self.catalog = CatalogTLE()
         self.fig = Figure(figsize=(6,4), dpi=100)
         self.ax = self.fig.add_subplot(111)
@@ -84,6 +90,7 @@ class Work(tk.Frame):
                                 relief=tk.FLAT, bg=BASECOLOR)
         self._control.grid(row=0, column=2, sticky="wesn")
         self._makeButtons()
+        self._makeCombobox()
         return self
 
     def _makeButtons(self):
@@ -92,8 +99,17 @@ class Work(tk.Frame):
         self._processButton["bg"] = ITEMCOLOR
         self._processButton["fg"] = TEXTCOLOR
         self._processButton["command"] = self.showProcessingResults
-        self._processButton.grid(column=0, row=0)
+        self._processButton.grid(column=0, row=0, sticky='w')
         return self
+
+    def _makeCombobox(self):
+        self.combobox = ttk.Combobox(self._control, values=parameters,
+                state='readonly', textvariable=self.parameter)
+        self.combobox.current(0)
+        self.combobox.bind('<<ComboboxSelected>>', self._plot_of_parameter)
+        self.combobox.grid(row=1, sticky='w')
+        return self
+
 
     def _placePlots(self):
         self._plots = tk.Frame(self, width=400, height=320, bd=1,
@@ -116,16 +132,31 @@ class Work(tk.Frame):
 
     def showProcessingResults(self):
         self.ax.clear()
+        self.ax.grid(True)
         processedCatalog = ProcessingCatalog(self.catalog)
         with mpl.style.context('./presentation.mplstyle'):
             # self.ax.plot(np.random.normal(0, 1, 100))
             self.ax.plot(processedCatalog.extrapolateShort())
             self.fig.canvas.draw()
-            self.ax.grid(True)
             self.ax.set_xlabel('Epoсh')
             self.ax.set_ylabel(r'$\sigma R$')
             self.ax.set_title(self.catalog.name[1])
         return self
+
+    def _plot_of_parameter(self, event):
+        self.ax.clear()
+        self.ax.grid(True, color='white', linewidth=2, which='both', alpha=0.3)
+        with mpl.style.context('./presentation.mplstyle'):
+            f = 1000
+            t = np.arange(0, 0.001, 1/100e3)
+            self.ax.plot(np.random.normal(0, 0.1, 100) + signalos[self.combobox.get()](2 * pi * f * t))
+            self.fig.canvas.draw()
+            self.ax.set_xlabel(r'$\xi$')
+            self.ax.set_ylabel(r'$%s\left(\xi\right)$' % self.combobox.get())
+            self.ax.set_title('Signal with normal distributed noise')
+            self.fig.canvas.draw()
+        return self
+
 
 root = tk.Tk()
 app = MainWindow(master=root)

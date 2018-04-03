@@ -1,10 +1,10 @@
 font.family : sans-serif
 font.weight : bold
-font.size : 24
-axes.titlesize : 24
-axes.labelsize : 24
+font.size : 16
+axes.titlesize : 20
+axes.labelsize : 16
 axes.facecolor : none
-lines.linewidth : 5
+lines.linewidth : 2
 lines.markersize : 8
 xtick.labelsize : 16
 ytick.labelsize : 16
@@ -12,7 +12,7 @@ text.usetex : True
 text.latex.unicode : True
 text.latex.preamble : \usepackage{inputenc}, \usepackage[T2A]{fontenc}, \usepackage[russian]{babel}
 legend.loc : best
-legend.fontsize : 24
+legend.fontsize : 16
 xtick.minor.size : 1
 ytick.minor.size : 1
 xtick.minor.visible : True
@@ -20,9 +20,10 @@ ytick.minor.visible : True
 xtick.direction : inout
 ytick.direction : inout
 ytick.color : k
-grid.alpha : 1.0
+grid.alpha : 0.3
 grid.color: white
 grid.linestyle: -
+grid.linewidth: 3
 savefig.transparent: True
 savefig.bbox: tight
 figure.figsize: 10.0, 8.0
