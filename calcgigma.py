@@ -82,28 +82,28 @@ def EphemSigma(x1, v1, x2, v2, ephem):
 
     if ephem == 0:
         delta = orbit2.semimajor_axis - orbit1.semimajor_axis
-        ephem_latex = 'a (semimajor axis)'
+
     elif ephem == 1:
         delta = orbit2.eccentricity - orbit1.eccentricity
-        ephem_latex = 'e (eccentricity)'
+
     elif ephem == 2:
         delta =  orbit2.inclination - orbit1.inclination
-        ephem_latex = 'i (inclination)'
+
     elif ephem == 3:
         delta = orbit2.draco - orbit1.draco
-        ephem_latex = '\Omega'
+
     elif ephem == 4:
         delta = orbit2.omega - orbit1.omega
-        ephem_latex = '\omega'
+
     else:
         delta = orbit2.M_0 - orbit1.M_0
-        ephem_latex = 'M_0'
 
-    return delta, ephem_latex
+    return delta
 
 
-def DrawShort_R(catalog):
-    '''  Создание графиков для коротких интервалов
+
+def CalcShort_R(catalog):
+    '''  Возвращает массив полных ошибок "коротких интервалов"
     '''
 
     sig = []
@@ -125,18 +125,11 @@ def DrawShort_R(catalog):
 
         sig.append(FullSigma(x1, x2))
 
-    plt.plot(sig, 'c-')
-    plt.plot(sig, 'rx')
-
-    plt.xlabel('Epoсh')
-    plt.ylabel(r'$\sigma R$')
-    plt.title(catalog.name[1])
-    plt.grid(True)
-    plt.show()
+    return sig
 
 
-def DrawLong_R(catalog, number = 0):
-    ''' Создание графиков "длинных" интервалов
+def CalcLong_R(catalog, number = 0):
+    ''' Возвращает массив полных ошибок "длинных интервалов"
     '''
     line1 = catalog.line1[number]
     line2 = catalog.line2[number]
@@ -155,20 +148,11 @@ def DrawLong_R(catalog, number = 0):
 
         sig.append( FullSigma(x1, x2) )
 
-    plt.plot(sig, 'c-')
-    plt.plot(sig, 'rx')
-
-    plt.plot(number, 0, 'k^')
-
-    plt.xlabel('Epoсh')
-    plt.ylabel(r'$\sigma R$')
-    plt.title(catalog.name[1])
-    plt.grid(True)
-    plt.show()
+    return sig
 
 
-def DrawShort_3(catalog):
-    '''  Создание модных графиков для коротких интервалов
+def CalcShort_3(catalog):
+    '''    Возвращает три массива орбитальных ошибок "коротких интервалов"
     '''
 
     sig1 = []
@@ -197,23 +181,11 @@ def DrawShort_3(catalog):
         sig2.append( s2 )
         sig3.append( s3 )
 
-    plt.plot(sig1, 'c-')
-    plt.plot(sig2, 'r-')
-    plt.plot(sig3, 'g-')
-
-    plt.plot(sig1, 'kx')
-    plt.plot(sig2, 'kx')
-    plt.plot(sig3, 'kx')
-
-    plt.xlabel('Epoсh');
-    plt.ylabel(r'$\sigma R $');
-    plt.title(catalog.name[1]);
-    plt.grid(True)
-    plt.show()
+    return sig1, sig2, sig3
 
 
-def DrawLong_3(catalog, number = 0):
-    ''' Графики модных ошибок
+def CalcLong_3(catalog, number = 0):
+    ''' Возвращает три массива орбитальных ошибок "длинных интервалов"
     '''
     
     sig1 = []
@@ -239,6 +211,124 @@ def DrawLong_3(catalog, number = 0):
         sig1.append( s1 )
         sig2.append( s2 )
         sig3.append( s3 )
+
+    return sig1, sig2, sig3
+
+
+def CalcShort_ephem(catalog, ephem):
+    '''  Возвращает масиив ошибок по конкретному элементу орбиты
+    '''
+
+    sig = []
+    for numsat in range(0, len(catalog.line1) - 1):
+        # формирование массива данных рассчётов
+
+        line1 = catalog.line1[numsat]
+        line2 = catalog.line2[numsat]
+        sat1 = twoline2rv(line1, line2, wgs72)
+
+        line1 = catalog.line1[numsat + 1]
+        line2 = catalog.line2[numsat + 1]
+        sat2 = twoline2rv(line1, line2, wgs72)
+
+        dT = (catalog.JD[numsat + 1] - catalog.JD[numsat]) * 24 * 60
+
+        x1, v1 = sgp4(sat1, dT)
+        x2, v2 = sgp4(sat2, 0)
+
+        s = EphemSigma(x1, v1, x2, v2, ephem)
+
+        sig.append(s)
+
+    return sig
+    
+
+def CalcLong_ephem(catalog, ephem, number = 0):
+    '''  Возвращает массив ошибок по конкретному элементу орбиты
+    '''
+    
+    line1 = catalog.line1[number]
+    line2 = catalog.line2[number]
+    sat1 = twoline2rv(line1, line2, wgs72)
+
+    sig = []
+    for numsat in range(0, len(catalog.line1)):
+        line1 = catalog.line1[numsat]
+        line2 = catalog.line2[numsat]
+        sat2 = twoline2rv(line1, line2, wgs72)
+
+        dT = (catalog.JD[numsat] - catalog.JD[number]) * 24 * 60
+
+        x1, v1 = sgp4(sat1, dT)
+        x2, v2 = sgp4(sat2, 0)
+
+        s = EphemSigma(x1, v1, x2, v2, ephem)
+
+        sig.append( s )
+
+    return sig
+
+
+def DrawShort_R(catalog):
+    '''  Создание графиков для коротких интервалов
+    '''
+    
+    sig = CalcShort_R(catalog)
+
+    plt.plot(sig, 'c-')
+    plt.plot(sig, 'rx')
+
+    plt.xlabel('Epoсh')
+    plt.ylabel(r'$\sigma R$')
+    plt.title(catalog.name[1])
+    plt.grid(True)
+    plt.show()
+
+
+def DrawLong_R(catalog, number = 0):
+    ''' Создание графиков "длинных" интервалов
+    '''
+    
+    sig = CalcLong_R(catalog, number)
+
+    plt.plot(sig, 'c-')
+    plt.plot(sig, 'rx')
+
+    plt.plot(number, 0, 'k^')
+
+    plt.xlabel('Epoсh')
+    plt.ylabel(r'$\sigma R$')
+    plt.title(catalog.name[1])
+    plt.grid(True)
+    plt.show()
+
+
+def DrawShort_3(catalog):
+    '''  Создание графиков орбитальных ошибок для коротких интервалов
+    '''
+
+    sig1, sig2, sig3 = CalcShort_3(catalog)
+
+    plt.plot(sig1, 'c-')
+    plt.plot(sig2, 'r-')
+    plt.plot(sig3, 'g-')
+
+    plt.plot(sig1, 'kx')
+    plt.plot(sig2, 'kx')
+    plt.plot(sig3, 'kx')
+
+    plt.xlabel('Epoсh');
+    plt.ylabel(r'$\sigma R $');
+    plt.title(catalog.name[1]);
+    plt.grid(True)
+    plt.show()
+
+
+def DrawLong_3(catalog, number = 0):
+    ''' Графики орбитальных для длинных интервалов
+    '''
+    
+    sig1, sig2, sig3 = CalcLong_3(catalog, number)   
 
     plt.plot(sig1, 'c-')
     plt.plot(sig2, 'r-')
@@ -261,32 +351,13 @@ def DrawShort_ephem(catalog, ephem):
     '''  Создание графиков для коротких интервалов по элементу орбиты
     '''
 
-    sig = []
-    for numsat in range(0, len(catalog.line1) - 1):
-        # формирование массива данных рассчётов
-
-        line1 = catalog.line1[numsat]
-        line2 = catalog.line2[numsat]
-        sat1 = twoline2rv(line1, line2, wgs72)
-
-        line1 = catalog.line1[numsat + 1]
-        line2 = catalog.line2[numsat + 1]
-        sat2 = twoline2rv(line1, line2, wgs72)
-
-        dT = (catalog.JD[numsat + 1] - catalog.JD[numsat]) * 24 * 60
-
-        x1, v1 = sgp4(sat1, dT)
-        x2, v2 = sgp4(sat2, 0)
-
-        s, s_latex = EphemSigma(x1, v1, x2, v2, ephem)
-
-        sig.append(s)
+    sig = CalcShort_ephem(catalog, ephem)
 
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
 
     plt.xlabel('Epoсh');
-    plt.ylabel(s_latex);         # СДЕЛАТЬ отображение конкретного элемента орбиты!!!!
+    plt.ylabel('Ephemeris');         # СДЕЛАТЬ отображение конкретного элемента орбиты!!!!
     plt.title(catalog.name[1]);
     plt.grid(True)
     plt.show()
@@ -295,24 +366,8 @@ def DrawShort_ephem(catalog, ephem):
 def DrawLong_ephem(catalog, ephem, number = 0):
     ''' Создание графиков "длинных" интервалов для элемента орбиты
     '''
-    line1 = catalog.line1[number]
-    line2 = catalog.line2[number]
-    sat1 = twoline2rv(line1, line2, wgs72)
-
-    sig = []
-    for numsat in range(0, len(catalog.line1)):
-        line1 = catalog.line1[numsat]
-        line2 = catalog.line2[numsat]
-        sat2 = twoline2rv(line1, line2, wgs72)
-
-        dT = (catalog.JD[numsat] - catalog.JD[number]) * 24 * 60
-
-        x1, v1 = sgp4(sat1, dT)
-        x2, v2 = sgp4(sat2, 0)
-
-        s, s_latex = EphemSigma(x1, v1, x2, v2, ephem)
-
-        sig.append( s )
+    
+    sig = CalcLong_ephem(catalog, ephem, number)
 
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
@@ -320,7 +375,7 @@ def DrawLong_ephem(catalog, ephem, number = 0):
     plt.plot(number, 0, 'k^')
 
     plt.xlabel('Epoсh')
-    plt.ylabel(s_latex)
+    plt.ylabel('Ephemeris')
     plt.title(catalog.name[1])
     plt.grid(True)
     plt.show()
