@@ -12,7 +12,7 @@ from KeplerOrbit import KeplerOrbit
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
-from drawsigma import *
+from calcsigma import *
 
 class ProcessingCatalog:
     def __init__(self, catalog):

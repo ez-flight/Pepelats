@@ -21,6 +21,7 @@ SHADOWCOLOR="#a9a9a9"
 BORDERCOLOR="#808080"
 HIGHLIGHTCOLOR="#5F9EA0"
 TEXTCOLOR="#484848"
+PROJ='Sattelarium 0.3'
 
 class MainWindow(tk.Frame):
     '''
@@ -28,6 +29,8 @@ class MainWindow(tk.Frame):
     '''
     def __init__(self, master=None):
         tk.Frame.__init__(self, master, bg="orange")
+        self._master = master
+        self._master.title(PROJ)
         self.grid(sticky=tk.N + tk.S + tk.E + tk.W)
         self.addMenu()
         self._placeWorkarea()
@@ -48,8 +51,8 @@ class MainWindow(tk.Frame):
         return self
 
     def open(self):
-        print("open")
         self.catalogfile = tk.filedialog.askopenfilename()
+        self._master.title('%s %s' % (PROJ, self.catalogfile))
         self.catalog = CatalogTLE()
         self.catalog.ReadFullTLE(self.catalogfile)
         self._workArea.setCatalog(self.catalog)
