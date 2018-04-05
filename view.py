@@ -9,7 +9,7 @@ from math import *
 import numpy as np
 
 from readtle import CatalogTLE
-from processingCenter import *
+from calcsigma import *
 
 MAINWIDTH=640
 MAINHEIGHT=402
@@ -63,8 +63,7 @@ class MainWindow(tk.Frame):
         self._workArea.rowconfigure(0, weight=1)
         self._workArea.columnconfigure(0, weight=1)
         return self
-parameters = ['sin', 'cos', '2 cos', '2 sin']
-signalos = {'sin': np.sin, 'cos': np.cos, '2 cos': lambda x: 2 * np.cos(x), '2 sin': lambda x: 2 * np.sin(x)}
+parameters = [0, 1, 2, 3, 4]
 
 class Work(tk.Frame):
     def __init__(self, master):
@@ -72,7 +71,7 @@ class Work(tk.Frame):
                           height=MAINHEIGHT, bg=BASECOLOR, bd=1,
                           relief=tk.FLAT)
         self._master = master
-        self.parameter = 'sin'
+        self.parameter = parameters[0]
         self.catalog = CatalogTLE()
         self.fig = Figure(figsize=(6,4), dpi=100)
         self.ax = self.fig.add_subplot(111)
@@ -98,11 +97,11 @@ class Work(tk.Frame):
 
     def _makeButtons(self):
         self._processButton = tk.Button(self._control)
-        self._processButton["text"] = "Сделай график"
+        self._processButton["text"] = "Очистить"
         self._processButton["bg"] = ITEMCOLOR
         self._processButton["fg"] = TEXTCOLOR
-        self._processButton["command"] = self.showProcessingResults
-        self._processButton.grid(column=0, row=0, sticky='w')
+        self._processButton["command"] = self._clear_plot
+        self._processButton.grid(column=1, row=0, sticky='w')
         return self
 
     def _makeCombobox(self):
@@ -110,7 +109,7 @@ class Work(tk.Frame):
                 state='readonly', textvariable=self.parameter)
         self.combobox.current(0)
         self.combobox.bind('<<ComboboxSelected>>', self._plot_of_parameter)
-        self.combobox.grid(row=1, sticky='w')
+        self.combobox.grid(row=0,column=0, sticky='w')
         return self
 
 
@@ -124,6 +123,8 @@ class Work(tk.Frame):
     def _makeFigure(self):
         self.fig.patch.set_facecolor(BASECOLOR)
         self.ax.set_facecolor(SHADOWCOLOR)
+        with mpl.style.context('./presentation.mplstyle'):
+            self.ax.grid(True)
         self.canvas = FigureCanvasTkAgg(self.fig, self._plots)
         self.canvas.get_tk_widget().pack(side="top", fill=tk.BOTH, expand=1)
         self.toolbar = NavigationToolbar2TkAgg(self.canvas, self._plots)
@@ -133,30 +134,20 @@ class Work(tk.Frame):
         self.canvas.show()
         return self
 
-    def showProcessingResults(self):
-        self.ax.clear()
-        self.ax.grid(True)
-        processedCatalog = ProcessingCatalog(self.catalog)
+    def _clear_plot(self):
         with mpl.style.context('./presentation.mplstyle'):
-            # self.ax.plot(np.random.normal(0, 1, 100))
-            self.ax.plot(processedCatalog.extrapolateShort())
+            self.ax.clear()
+            self.ax.grid(True)
             self.fig.canvas.draw()
-            self.ax.set_xlabel('Epoсh')
-            self.ax.set_ylabel(r'$\sigma R$')
-            self.ax.set_title(self.catalog.name[1])
         return self
 
     def _plot_of_parameter(self, event):
-        self.ax.clear()
-        self.ax.grid(True, color='white', linewidth=2, which='both', alpha=0.3)
         with mpl.style.context('./presentation.mplstyle'):
-            f = 1000
-            t = np.arange(0, 0.001, 1/100e3)
-            self.ax.plot(np.random.normal(0, 0.1, 100) + signalos[self.combobox.get()](2 * pi * f * t))
-            self.fig.canvas.draw()
-            self.ax.set_xlabel(r'$\xi$')
-            self.ax.set_ylabel(r'$%s\left(\xi\right)$' % self.combobox.get())
-            self.ax.set_title('Signal with normal distributed noise')
+            self.ax.plot(CalcShort_ephem(self.catalog, int(self.combobox.get())))
+            self.ax.set_xlabel(r'Epoch')
+            self.ax.set_ylabel(r'%s' % self.combobox.get())
+            self.ax.set_title(r'Короткие интервалы')
+            self.ax.grid(True, color='white', linewidth=2, which='both', alpha=0.3)
             self.fig.canvas.draw()
         return self
 
