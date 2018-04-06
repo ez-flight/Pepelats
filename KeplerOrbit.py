@@ -17,7 +17,7 @@ from math import *
 #  def  __init__(self, a = 0, e = 0, i = 0, d = 0, w = 0, m_0 = 0):
 
 
-mu = 398600.44150
+MU = 398600.44150
 
 class KeplerOrbit:
 
@@ -67,7 +67,7 @@ class KeplerOrbit:
 
         #####       2       #####
         # фокальный параметр
-        p = c**2 / mu
+        p = c**2 / MU
 
         #####       3       #####
         # угол наклона орбиты к плоскости экватора
@@ -105,18 +105,18 @@ class KeplerOrbit:
 
         #####       6       #####
         # постоянная энергии
-        h = V**2 - 2*mu / R
-        # h = mu (2/R - 1/a);
+        h = V**2 - 2*MU / R
+        # h = MU (2/R - 1/a);
 
         #####       7       #####
         # большая полуось орбиты
-        a = - mu / h
-        # a = 1 / (2/R - V^2 / mu);
+        a = - MU / h
+        # a = 1 / (2/R - V^2 / MU);
 
         #####       8       #####
         # Вычисляем векторы Лапласа:
         D = x*x1 + y*y1 + z*z1
-        dD = mu / R + h
+        dD = MU / R + h
 
         f_1 = dD * x - D*x1
         f_2 = dD * y - D*y1
@@ -128,7 +128,7 @@ class KeplerOrbit:
         e = sqrt((a-p)/a)
         if  (p > a):
             e = 0
-        # e = f / mu;
+        # e = f / MU;
 
         #####       10      #####
         # вычисляем аргумент перицентра
@@ -146,7 +146,7 @@ class KeplerOrbit:
         #####       11      #####
         # истинная аномалия:
         cos_Vi = (p - R) / (e*R)
-        sin_Vi = D / (e*R) * sqrt(p/mu)
+        sin_Vi = D / (e*R) * sqrt(p/MU)
         if  sin_Vi >= 0:
             Vi = acos(cos_Vi)
         elif sin_Vi <= 0:
@@ -193,7 +193,7 @@ class KeplerOrbit:
         M_0     = self.M_0
         
         # вычесляем среднее движение
-        n = sqrt(mu) / (a*sqrt(a))
+        n = sqrt(MU) / (a*sqrt(a))
 
         # вычисляем среднюю аномалию
         M = M_0 + n * dt
@@ -244,9 +244,9 @@ class KeplerOrbit:
         # фокальный параметр
         P = a * (1 - e**2)
 
-        V_r = sqrt(mu / P) * e * sin(v)
-        V_t = sqrt(mu * P) / r
-        # V_t = sqrt(mu/P) * (1 + e*cos(v));
+        V_r = sqrt(MU / P) * e * sin(v)
+        V_t = sqrt(MU * P) / r
+        # V_t = sqrt(MU/P) * (1 + e*cos(v));
 
         # XYZ(4:6) = V_r * lnm + V_t * lnm2;
         
@@ -262,7 +262,7 @@ class KeplerOrbit:
             в секундах
         '''
         a = self.semimajor_axis;
-        n = sqrt(mu) / ( a * sqrt(a) )
+        n = sqrt(MU) / ( a * sqrt(a) )
         T = 2*pi / n
         return n
 

@@ -24,7 +24,7 @@ def _openFile():
     '''  Открытие файла -- каталога TLE. Для тестовых функций.
     '''
     catalog = CatalogTLE()
-    catalog.ReadFullTLE('catalogs/zarya_2018_01_01_15.txt')
+    catalog.readFullTLE('catalogs/zarya_2018_01_01_15.txt')
     
     return catalog
 
@@ -388,12 +388,12 @@ def _testSGP():
     print('Тест SGP.');        
  
     catalog = CatalogTLE()  
-    catalog.ReadTLEsat('catalogs/catalog_2016_06_30.txt', 'ISS')
+    catalog.readTLEsat('catalogs/catalog_2016_06_30.txt', 'ISS')
     
-    catalog.Status()
+    catalog.status()
     
-    line1 = catalog.GetLine1('ISS');
-    line2 = catalog.GetLine2('ISS');
+    line1 = catalog.getLine1('ISS');
+    line2 = catalog.getLine2('ISS');
 
     satellite = twoline2rv(line1, line2, wgs72)
     

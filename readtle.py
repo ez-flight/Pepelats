@@ -12,13 +12,13 @@
 #    JD
 #
 #    def __init__(self):
-#    def ReadTLE_sat(self, catalog_file, SatName):
-#    def ReadFullTLE(self, catalog_file):
-#    def Status(self):
-#    def GetLine1(self, name):
-#    def GetLine2(self, name):
-#    def GetJD(self, name):
-#    def CalcJD(self, name):
+#    def readTLE_sat(self, catalog_file, SatName):
+#    def readFullTLE(self, catalog_file):
+#    def status(self):
+#    def getLine1(self, name):
+#    def getLine2(self, name):
+#    def getJD(self, name):
+#    def calcJD(self, name):
 
 # обработать исключение, если задано несуществующее имя ИСЗ!!!!
 
@@ -39,7 +39,7 @@ class CatalogTLE:
         self.JD     = []
 
 
-    def ReadTLEsat(self, catalog_file, SatName):
+    def readTLEsat(self, catalog_file, SatName):
         ''' Чтение информации из каталога по конкретному аппарату
         '''
         f = open(catalog_file, 'r')
@@ -69,11 +69,11 @@ class CatalogTLE:
                 self.name.append(line_name[2:-1])
                 self.line1.append(l1)
                 self.line2.append(l2)
-                self.JD.append(self.CalcJD(l1))
+                self.JD.append(self.calcJD(l1))
   
  
  
-    def ReadFullTLE(self, catalog_file):
+    def readFullTLE(self, catalog_file):
         ''' Полное чтение каталога TLE
         '''    
         f = open(catalog_file, 'r')
@@ -93,37 +93,37 @@ class CatalogTLE:
             l2 = f.readline()
             self.line1.append(l1)
             self.line2.append(l2)
-            self.JD.append(self.CalcJD(l1))
+            self.JD.append(self.calcJD(l1))
 
 
-    def GetName(self, num):
+    def getName(self, num):
         ''' По номеру записи в массиве возвращать название аппарата
         '''    
         return self.name[num]   
   
   
-    def GetLine1(self, name):
+    def getLine1(self, name):
         ''' По названию аппарата возвращать первую строку параметров его орбиты
         '''    
         num = name.index(name)
         return self.line1[num]   
 
 
-    def GetLine2(self, name):
+    def getLine2(self, name):
         ''' По названию аппарата возвращать вторую строку параметров его орбиты
         '''    
         num = name.index(name)
         return self.line2[num]   
 
 
-    def GetJD(self, name):
+    def getJD(self, name):
         ''' По названию аппарата возвращать временнУю привязку его эфемерид
         '''
         num = name.index(name)
         return self.JD[num]
 
 
-    def CalcJD(self, line_str):
+    def calcJD(self, line_str):
         ''' По данным первой строки вычисляет MJD привязки эфемерид спутника
         '''
         year = float(line_str[19:20])
@@ -144,7 +144,7 @@ class CatalogTLE:
         return JD
 
 
-    def Status(self):
+    def status(self):
         ''' Выводит информацию о текущем состоянии каталога
         '''
         
@@ -166,7 +166,7 @@ def _test1():
 
     print(a);
     
-    a.ReadFullTLE('catalogs/catalog_2016_06_30.txt')
+    a.readFullTLE('catalogs/catalog_2016_06_30.txt')
     
     print(a.name[0])    
     print(a.line1[0])
@@ -195,11 +195,11 @@ def _test2():
     print('  ')
     
     b = CatalogTLE()
-    b.ReadTLEsat('catalogs/zarya_2018_01_01_15.txt', 'ISS')
+    b.readTLEsat('catalogs/zarya_2018_01_01_15.txt', 'ISS')
     
     print('Данные по ISS:')
-    print(b.GetLine1('ISS'))
-    print(b.GetLine2('ISS'))
+    print(b.getLine1('ISS'))
+    print(b.getLine2('ISS'))
         
 
 if __name__=="__main__":
