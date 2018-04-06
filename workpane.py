@@ -80,10 +80,13 @@ class Work(tk.Frame):
         return self
 
     def _isToggledShort(self):
+        self._periodType = 0
         self._clear_plot()
+        self._scalePeriod.grid_forget()
         return self
 
     def _isToggledLong(self):
+        self._periodType = 1
         self._clear_plot()
         self._placeScalePeriod()
         return self
@@ -142,7 +145,7 @@ class Work(tk.Frame):
             if self._periodType == 0:
                 self.ax.plot(calcShort_ephem(self.catalog, self.ephemerisBox.get()))
                 title = 'Короткие интервалы'
-            else:
+            elif self._periodType == 1:
                 self.ax.plot(calcLong_ephem(self.catalog,
                     self.ephemerisBox.get(), self._scalePeriod.get()))
                 title = 'Длинные интервалы'
