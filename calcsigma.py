@@ -20,7 +20,7 @@ from mpl_toolkits.axes_grid.inset_locator import inset_axes
 # from pylab import show
 
 
-def _OpenFile():
+def _openFile():
     '''  Открытие файла -- каталога TLE. Для тестовых функций.
     '''
     catalog = CatalogTLE()
@@ -29,7 +29,7 @@ def _OpenFile():
     return catalog
 
 
-def FullSigma(x1, x2):
+def fullSigma(x1, x2):
     '''  Вычисление полной ошибки между двумя положениями спутников
     '''
     sigma = sqrt( (x1[0] - x2[0])**2 + (x1[1] - x2[1])**2 + (x1[2] - x2[2])**2 )
@@ -37,7 +37,7 @@ def FullSigma(x1, x2):
     return sigma
     
     
-def OrbitSigma(x1, v1, x2, v2):
+def orbitSigma(x1, v1, x2, v2):
     ''' Вычисление трёх составляющих ошибки 
         -- radial, 
         -- in-track
@@ -71,7 +71,7 @@ def OrbitSigma(x1, v1, x2, v2):
     return sigma1, sigma2, sigma3
 
 
-def EphemSigma(x1, v1, x2, v2, ephem):
+def ephemSigma(x1, v1, x2, v2, ephem):
     ''' Вычисление ошибки по конкретному элементу орбиты
     '''
 
@@ -80,19 +80,19 @@ def EphemSigma(x1, v1, x2, v2, ephem):
     orbit2 = KeplerOrbit()
     orbit2.xyz2ephem(x2[0], x2[1], x2[2], v2[0], v2[1], v2[2])
 
-    if ephem == 0:
+    if ephem == 'a':
         delta = orbit2.semimajor_axis - orbit1.semimajor_axis
 
-    elif ephem == 1:
+    elif ephem == 'e':
         delta = orbit2.eccentricity - orbit1.eccentricity
 
-    elif ephem == 2:
+    elif ephem == 'i':
         delta =  orbit2.inclination - orbit1.inclination
 
-    elif ephem == 3:
+    elif ephem == 'd':
         delta = orbit2.draco - orbit1.draco
 
-    elif ephem == 4:
+    elif ephem == 'w':
         delta = orbit2.omega - orbit1.omega
 
     else:
@@ -102,7 +102,7 @@ def EphemSigma(x1, v1, x2, v2, ephem):
 
 
 
-def CalcShort_R(catalog):
+def calcShort_R(catalog):
     '''  Возвращает массив полных ошибок "коротких интервалов"
     '''
 
@@ -123,12 +123,12 @@ def CalcShort_R(catalog):
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
 
-        sig.append(FullSigma(x1, x2))
+        sig.append(fullSigma(x1, x2))
 
     return sig
 
 
-def CalcLong_R(catalog, number = 0):
+def calcLong_R(catalog, number = 0):
     ''' Возвращает массив полных ошибок "длинных интервалов"
     '''
     line1 = catalog.line1[number]
@@ -146,12 +146,12 @@ def CalcLong_R(catalog, number = 0):
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
 
-        sig.append( FullSigma(x1, x2) )
+        sig.append( fullSigma(x1, x2) )
 
     return sig
 
 
-def CalcShort_3(catalog):
+def calcShort_3(catalog):
     '''    Возвращает три массива орбитальных ошибок "коротких интервалов"
     '''
 
@@ -175,7 +175,7 @@ def CalcShort_3(catalog):
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
 
-        s1, s2, s3 = OrbitSigma(x1, v1, x2, v2)
+        s1, s2, s3 = orbitSigma(x1, v1, x2, v2)
 
         sig1.append( s1 )
         sig2.append( s2 )
@@ -184,7 +184,7 @@ def CalcShort_3(catalog):
     return sig1, sig2, sig3
 
 
-def CalcLong_3(catalog, number = 0):
+def calcLong_3(catalog, number = 0):
     ''' Возвращает три массива орбитальных ошибок "длинных интервалов"
     '''
     
@@ -206,7 +206,7 @@ def CalcLong_3(catalog, number = 0):
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
 
-        s1, s2, s3 = OrbitSigma(x1, v1, x2, v2)
+        s1, s2, s3 = orbitSigma(x1, v1, x2, v2)
 
         sig1.append( s1 )
         sig2.append( s2 )
@@ -215,7 +215,7 @@ def CalcLong_3(catalog, number = 0):
     return sig1, sig2, sig3
 
 
-def CalcShort_ephem(catalog, ephem):
+def calcShort_ephem(catalog, ephem):
     '''  Возвращает масиив ошибок по конкретному элементу орбиты
     '''
 
@@ -236,14 +236,14 @@ def CalcShort_ephem(catalog, ephem):
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
 
-        s = EphemSigma(x1, v1, x2, v2, ephem)
+        s = ephemSigma(x1, v1, x2, v2, ephem)
 
         sig.append(s)
 
     return sig
     
 
-def CalcLong_ephem(catalog, ephem, number = 0):
+def calcLong_ephem(catalog, ephem, number = 0):
     '''  Возвращает массив ошибок по конкретному элементу орбиты
     '''
     
@@ -262,18 +262,18 @@ def CalcLong_ephem(catalog, ephem, number = 0):
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
 
-        s = EphemSigma(x1, v1, x2, v2, ephem)
+        s = ephemSigma(x1, v1, x2, v2, ephem)
 
         sig.append( s )
 
     return sig
 
 
-def DrawShort_R(catalog):
+def drawShort_R(catalog):
     '''  Создание графиков для коротких интервалов
     '''
     
-    sig = CalcShort_R(catalog)
+    sig = calcShort_R(catalog)
 
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
@@ -285,11 +285,11 @@ def DrawShort_R(catalog):
     plt.show()
 
 
-def DrawLong_R(catalog, number = 0):
+def drawLong_R(catalog, number = 0):
     ''' Создание графиков "длинных" интервалов
     '''
     
-    sig = CalcLong_R(catalog, number)
+    sig = calcLong_R(catalog, number)
 
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
@@ -303,11 +303,11 @@ def DrawLong_R(catalog, number = 0):
     plt.show()
 
 
-def DrawShort_3(catalog):
+def drawShort_3(catalog):
     '''  Создание графиков орбитальных ошибок для коротких интервалов
     '''
 
-    sig1, sig2, sig3 = CalcShort_3(catalog)
+    sig1, sig2, sig3 = calcShort_3(catalog)
 
     plt.plot(sig1, 'c-')
     plt.plot(sig2, 'r-')
@@ -324,11 +324,11 @@ def DrawShort_3(catalog):
     plt.show()
 
 
-def DrawLong_3(catalog, number = 0):
+def drawLong_3(catalog, number = 0):
     ''' Графики орбитальных для длинных интервалов
     '''
     
-    sig1, sig2, sig3 = CalcLong_3(catalog, number)   
+    sig1, sig2, sig3 = calcLong_3(catalog, number)   
 
     plt.plot(sig1, 'c-')
     plt.plot(sig2, 'r-')
@@ -347,11 +347,11 @@ def DrawLong_3(catalog, number = 0):
     plt.show()
 
 
-def DrawShort_ephem(catalog, ephem):
+def drawShort_ephem(catalog, ephem):
     '''  Создание графиков для коротких интервалов по элементу орбиты
     '''
 
-    sig = CalcShort_ephem(catalog, ephem)
+    sig = calcShort_ephem(catalog, ephem)
 
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
@@ -363,11 +363,11 @@ def DrawShort_ephem(catalog, ephem):
     plt.show()
 
 
-def DrawLong_ephem(catalog, ephem, number = 0):
+def drawLong_ephem(catalog, ephem, number = 0):
     ''' Создание графиков "длинных" интервалов для элемента орбиты
     '''
     
-    sig = CalcLong_ephem(catalog, ephem, number)
+    sig = calcLong_ephem(catalog, ephem, number)
 
     plt.plot(sig, 'c-')
     plt.plot(sig, 'rx')
@@ -416,22 +416,22 @@ def _testSGP():
 
 def _testDraw():
     print('открытие каталога:')
-    catalog = _OpenFile()
+    catalog = _openFile()
 
     print('Графики полной ошибки:')
-    DrawShort_R(catalog)
-    DrawLong_R(catalog)
-    DrawLong_R(catalog, 10)
+    drawShort_R(catalog)
+    drawLong_R(catalog)
+    drawLong_R(catalog, 10)
 
     print('Орбитальные ошибки:')
-    DrawShort_3(catalog)
-    DrawLong_3(catalog)
-    DrawLong_3(catalog, 10)
+    drawShort_3(catalog)
+    drawLong_3(catalog)
+    drawLong_3(catalog, 10)
 
     print('Ошибки большой полуоси:')
-    DrawShort_ephem(catalog, 'a')
-    DrawLong_ephem(catalog, 'a')
-    DrawLong_ephem(catalog, 'a', 10)
+    drawShort_ephem(catalog, 'a')
+    drawLong_ephem(catalog, 'a')
+    drawLong_ephem(catalog, 'a', 10)
 
 
 if __name__ == "__main__":
