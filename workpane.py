@@ -9,6 +9,21 @@ import matplotlib.pyplot as mpl
 from calcsigma import *
 from config import *
 
+class SatelliteToolbar(NavigationToolbar2TkAgg):
+    def __init__(self,canvas_,parent_):
+        self.toolitems = (
+            ('Zoom', 'зум', 'zoom_to_rect', 'zoom'),
+            ('Subplots', 'Поправить поля', 'subplots', 'configure_subplots'),
+            ('Save', 'Сохранить график', 'filesave', 'save_figure'),
+            )
+        NavigationToolbar2TkAgg.__init__(self,canvas_,parent_)
+
+    def zoom(self):
+        NavigationToolbar2TkAgg.zoom(self)
+        return self
+    def clear(self):
+        return self
+
 class Work(tk.Frame):
     def __init__(self, master, catalogtle):
         tk.Frame.__init__(self, master, width=MAINWIDTH,
@@ -36,45 +51,52 @@ class Work(tk.Frame):
     def _placeControlPane(self):
         self._control = tk.Frame(self, width=400, height=320, bd=1,
                                 relief=tk.FLAT, bg=BASECOLOR)
-        self._control.grid(row=0, column=2, sticky="wesn")
-        self._makePeriodTypeFrame()
+        self._control.grid(row=0, column=2, padx=20, pady=20, sticky="wesn")
         self._makeParametersFrame()
-        self._makeScalePeriod()
+        self._makePeriodTypeFrame()
         return self
 
     def _makeButtons(self):
-        self._processButton = tk.Button(self._control)
+        self._processButton = tk.Button(self.parametersArea)
         self._processButton["text"] = "Очистить"
         self._processButton["bg"] = ITEMCOLOR
         self._processButton["fg"] = TEXTCOLOR
         self._processButton["command"] = self._clear_plot
-        self._processButton.grid(column=0, row=2, sticky='we')
+        self._processButton.grid(column=0, row=4, sticky='we', pady=5)
         return self
 
     def _makePeriodTypeFrame(self):
-        self._periodArea = tk.Frame(self._control, width=400, height=20,
-                relief=tk.FLAT)
-        self._periodArea.grid(row=0, column=0, sticky='we')
+        self._periodArea = tk.Frame(self._control, width=300, height=100,
+                relief=tk.FLAT, bg=BASECOLOR)
+        self._periodArea.grid(row=0, column=0, padx=20, pady=20, sticky='we')
+        self._makePeriodType()
+        return self
+
+    def _makePeriodType(self):
         self._periodType = tk.IntVar()
         self._periodTypeButton = tk.Radiobutton(self._periodArea,
-                bg=BASECOLOR, fg=TEXTCOLOR, indicatoron=1, height=3,
-                activebackground=HIGHLIGHTCOLOR, takefocus="on",
+                bg=BASECOLOR, fg=TEXTCOLOR, indicatoron=1, height=2,
+                activebackground=SHADOWCOLOR, takefocus="on",
                 text="Короткие интервалы", variable=self._periodType,
-                command=self._isToggledShort, value=0)
-        self._periodTypeButton.grid(row=0, column=0, sticky='we')
+                command=self._isToggledShort, value=0, bd=0)
+        self._periodTypeButton.grid(row=0, column=0, padx=1, pady=1,
+                sticky='we')
         self._periodTypeButton.select()
         self._periodTypeButton= tk.Radiobutton(self._periodArea,
-                bg=BASECOLOR, fg=TEXTCOLOR, indicatoron=1, height=3,
-                activebackground=HIGHLIGHTCOLOR,
+                bg=BASECOLOR, fg=TEXTCOLOR, indicatoron=1, height=2,
+                relief=tk.FLAT,
+                activebackground=SHADOWCOLOR,
                 text="Длинные интервалы", variable=self._periodType,
-                command=self._isToggledLong, value=1)
-        self._periodTypeButton.grid(row=0, column=1, sticky='we')
+                command=self._isToggledLong, value=1, bd=0)
+        self._periodTypeButton.grid(row=1, column=0, padx=1, pady=1,
+                sticky='we')
+        self._makeScalePeriod()
         return self
 
     def _makeParametersFrame(self):
-        self.parametersArea = tk.Frame(self._control, width=400,
+        self.parametersArea = tk.Frame(self._control, width=300,
                 height=50, relief=tk.FLAT, bg=BASECOLOR)
-        self.parametersArea.grid(row=1, column=0, columnspan=2, sticky='we')
+        self.parametersArea.grid(row=1, column=0, padx=20, pady=20, sticky='we')
         self._makeEphemerisBox()
         self._makeButtons()
         return self
@@ -83,6 +105,7 @@ class Work(tk.Frame):
         self._periodType = 0
         self._clear_plot()
         self._scalePeriod.grid_forget()
+        self.scalelabel.grid_forget()
         return self
 
     def _isToggledLong(self):
@@ -92,22 +115,26 @@ class Work(tk.Frame):
         return self
 
     def _makeEphemerisBox(self):
+        ephemlabel = tk.Label(self.parametersArea, text='Выбор эфемериды',
+                bg=BASECOLOR, fg=TEXTCOLOR).grid(row=0, column=0, pady=5)
         self.ephemerisBox = ttk.Combobox(self.parametersArea, values=ephemerisNames,
                 state='readonly', textvariable=self.ephemeris)
         self.ephemerisBox.current(0)
-        self.ephemerisBox.configure(width=40, height=80)
         self.ephemerisBox.bind('<<ComboboxSelected>>', self._plot_of_ephemeris)
-        self.ephemerisBox.grid(row=0,column=0, sticky='we')
+        self.ephemerisBox.grid(row=1, column=0, sticky='wesn', padx=1, pady=1)
         return self
 
     def _placeScalePeriod(self):
-        self._scalePeriod.grid(row=1, column=0, sticky='we')
+        self.scalelabel.grid(row=2, column=0, pady=1)
+        self._scalePeriod.grid(row=3, column=0, pady=5, sticky='we')
         return self
 
     def _makeScalePeriod(self):
+        self.scalelabel = tk.Label(self.parametersArea, text='Момент экстраполяции',
+                bg=BASECOLOR, fg=TEXTCOLOR)
         self._scalePeriod = tk.Scale(self.parametersArea,
-                orient= tk.HORIZONTAL,length=250,from_=0,to=1,tickinterval=10,
-                resolution=1, bg=BASECOLOR)
+                orient= tk.HORIZONTAL, length=150, from_=0, to=1, tickinterval=10,
+                resolution=1, bg=BASECOLOR, fg=TEXTCOLOR)
         self._scalePeriod.bind('<ButtonRelease-1>', self._plot_of_ephemeris)
         return self
 
@@ -125,7 +152,7 @@ class Work(tk.Frame):
             self.ax.grid(True)
         self.canvas = FigureCanvasTkAgg(self.fig, self._plots)
         self.canvas.get_tk_widget().pack(side="top", fill=tk.BOTH, expand=1)
-        self.toolbar = NavigationToolbar2TkAgg(self.canvas, self._plots)
+        self.toolbar = SatelliteToolbar(self.canvas, self._plots)
         self.toolbar["background"] = BASECOLOR
         self.toolbar.update()
         self.canvas._tkcanvas.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
