@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
 from imp import reload
 from tkinter import ttk
 import tkinter as tk
@@ -41,7 +45,7 @@ class MainWindow(tk.Frame):
         self.catalogfile = tk.filedialog.askopenfilename()
         self._master.title('%s %s' % (PROJ, self.catalogfile))
         self.catalog = CatalogTLE()
-        self.catalog.ReadFullTLE(self.catalogfile)
+        self.catalog.readFullTLE(self.catalogfile)
         self._workArea.setCatalog(self.catalog)
         return self
 
