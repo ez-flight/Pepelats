@@ -13,3 +13,4 @@ HIGHLIGHTCOLOR="#5F9EA0"
 TEXTCOLOR="#484848"
 PROJ='Sattelarium 0.3'
 ephemerisNames = ['a', 'e', 'i', 'd', 'w']
+standard = {'bg': BASECOLOR, 'fg': TEXTCOLOR, 'bd': 1}
