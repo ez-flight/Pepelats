@@ -275,11 +275,11 @@ def drawShort_R(catalog):
     
     sig = calcShort_R(catalog)
 
-    plt.plot(sig, 'c-')
-    plt.plot(sig, 'rx')
+    plt.plot(sig, 'r-')
+    plt.plot(sig, 'k+')
 
     plt.xlabel('Epoсh')
-    plt.ylabel(r'$\sigma R$')
+    plt.ylabel(r'$\Delta R$')
     plt.title(catalog.name[1])
     plt.grid(True)
     plt.show()
@@ -291,13 +291,13 @@ def drawLong_R(catalog, number = 0):
     
     sig = calcLong_R(catalog, number)
 
-    plt.plot(sig, 'c-')
-    plt.plot(sig, 'rx')
+    plt.plot(sig, 'b-')
+    plt.plot(sig, 'k+')
 
     plt.plot(number, 0, 'k^')
 
     plt.xlabel('Epoсh')
-    plt.ylabel(r'$\sigma R$')
+    plt.ylabel(r'$\Delta R$')
     plt.title(catalog.name[1])
     plt.grid(True)
     plt.show()
@@ -309,16 +309,18 @@ def drawShort_3(catalog):
 
     sig1, sig2, sig3 = calcShort_3(catalog)
 
-    plt.plot(sig1, 'c-')
+    plt.plot(sig1, 'b-')
     plt.plot(sig2, 'r-')
     plt.plot(sig3, 'g-')
 
-    plt.plot(sig1, 'kx')
-    plt.plot(sig2, 'kx')
-    plt.plot(sig3, 'kx')
+    plt.plot(sig1, 'k+')
+    plt.plot(sig2, 'k+')
+    plt.plot(sig3, 'k+')
+
+    plt.legend( ("radial", "in-track", "cross-track"), loc='upper left' )
 
     plt.xlabel('Epoсh');
-    plt.ylabel(r'$\sigma R $');
+    plt.ylabel(r'$\Delta [km] $');
     plt.title(catalog.name[1]);
     plt.grid(True)
     plt.show()
@@ -330,18 +332,20 @@ def drawLong_3(catalog, number = 0):
     
     sig1, sig2, sig3 = calcLong_3(catalog, number)   
 
-    plt.plot(sig1, 'c-')
+    plt.plot(sig1, 'b-')
     plt.plot(sig2, 'r-')
     plt.plot(sig3, 'g-')
 
-    plt.plot(sig1, 'kx')
-    plt.plot(sig2, 'kx')
-    plt.plot(sig3, 'kx')
+    plt.plot(sig1, 'k+')
+    plt.plot(sig2, 'k+')
+    plt.plot(sig3, 'k+')
+    
+    plt.legend( ("radial", "in-track", "cross-track"), loc='upper left' )
 
     plt.plot(number, 0, 'k^')
 
     plt.xlabel('Epoсh');
-    plt.ylabel(r'$\sigma R $');
+    plt.ylabel(r'$\Delta [km]$');
     plt.title(catalog.name[1]);
     plt.grid(True)    
     plt.show()
@@ -353,11 +357,11 @@ def drawShort_ephem(catalog, ephem):
 
     sig = calcShort_ephem(catalog, ephem)
 
-    plt.plot(sig, 'c-')
-    plt.plot(sig, 'rx')
+    plt.plot(sig, 'r-')
+    plt.plot(sig, 'k+')
 
     plt.xlabel('Epoсh');
-    plt.ylabel('Ephemeris');         # СДЕЛАТЬ отображение конкретного элемента орбиты!!!!
+    plt.ylabel(r'$\Delta Ephemeris$');         # СДЕЛАТЬ отображение конкретного элемента орбиты!!!!
     plt.title(catalog.name[1]);
     plt.grid(True)
     plt.show()
@@ -369,13 +373,13 @@ def drawLong_ephem(catalog, ephem, number = 0):
     
     sig = calcLong_ephem(catalog, ephem, number)
 
-    plt.plot(sig, 'c-')
-    plt.plot(sig, 'rx')
+    plt.plot(sig, 'b-')
+    plt.plot(sig, 'k+')
 
     plt.plot(number, 0, 'k^')
 
     plt.xlabel('Epoсh')
-    plt.ylabel('Ephemeris')
+    plt.ylabel(r'$\Delta Ephemeris$')
     plt.title(catalog.name[1])
     plt.grid(True)
     plt.show()
