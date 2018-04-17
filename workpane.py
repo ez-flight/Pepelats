@@ -146,7 +146,7 @@ class Work(tk.Frame):
         return self
 
     def _makeFigure(self):
-        self.fig.patch.set_facecolor(BASECOLOR)
+        #self.fig.patch.set_facecolor(BASECOLOR)
         self.ax.set_facecolor(SHADOWCOLOR)
         with mpl.style.context('./presentation.mplstyle'):
             self.ax.grid(True)
