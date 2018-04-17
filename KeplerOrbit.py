@@ -267,6 +267,26 @@ class KeplerOrbit:
         return n
 
 
+    def get_ephem(self, ephem):
+        ''' возращение какого-либо элемента орбиты
+        '''
+        
+        if ephem == 'a':
+            value = self.semimajor_axis
+        elif ephem == 'e':
+            value = self.eccentricity
+        elif ephem == 'i':
+            value =  self.inclination
+        elif ephem == 'd':
+            value = self.draco
+        elif ephem == 'w':
+            value = self.omega
+        else:
+            value = self.M_0
+            
+        return value
+
+
 def _test():
     print('Ку! This is test Kepler.')
 

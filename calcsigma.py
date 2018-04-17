@@ -79,27 +79,10 @@ def ephemSigma(x1, v1, x2, v2, ephem):
     orbit1.xyz2ephem(x1[0], x1[1], x1[2], v1[0], v1[1], v1[2])
     orbit2 = KeplerOrbit()
     orbit2.xyz2ephem(x2[0], x2[1], x2[2], v2[0], v2[1], v2[2])
-
-    if ephem == 'a':
-        delta = orbit2.semimajor_axis - orbit1.semimajor_axis
-
-    elif ephem == 'e':
-        delta = orbit2.eccentricity - orbit1.eccentricity
-
-    elif ephem == 'i':
-        delta =  orbit2.inclination - orbit1.inclination
-
-    elif ephem == 'd':
-        delta = orbit2.draco - orbit1.draco
-
-    elif ephem == 'w':
-        delta = orbit2.omega - orbit1.omega
-
-    else:
-        delta = orbit2.M_0 - orbit1.M_0
+        
+    delta = orbit2.get_ephem(ephem) - orbit1.get_ephem(ephem)
 
     return delta
-
 
 
 def calcShort_R(catalog):
@@ -385,6 +368,79 @@ def drawLong_ephem(catalog, ephem, number = 0):
     plt.show()
 
 
+def drawEphem_oneSat(catalog, ephem, dT, number = 0):
+    ''' Создание графиков эволюции эфемериды в пронозе SGP
+    
+    catalog -- каталог ТЛЕ
+    ephem --   название той эфемериды, что нам надо
+    dT --      массив времён, на который строим график (в сутках)
+    number --  номер данных в каталоге (по умолчанию 0)
+    '''
+
+    line1 = catalog.line1[number]
+    line2 = catalog.line2[number]
+    sat1 = twoline2rv(line1, line2, wgs72)
+
+    val = []
+    for t in dT:
+        x1, v1 = sgp4(sat1, t /24/60)
+
+        orbit = KeplerOrbit()
+        orbit.xyz2ephem(x1[0], x1[1], x1[2], v1[0], v1[1], v1[2])
+        
+        val.append( orbit.get_ephem(ephem) )
+
+   
+    sig = calcLong_ephem(catalog, ephem, number)
+
+    plt.plot(val, 'c-')
+    plt.plot(val, 'k+')
+
+#    plt.plot(number, 0, 'k^')                      # !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    #   ПЕРЕВЕСТИ ВСЕ ГРАФИКИ НА ВРЕМЯ ПО ОСИ Х !!!
+
+    plt.xlabel('Epoсh (day)')
+    plt.ylabel('Ephemeris')
+    plt.title(catalog.name[1])
+    plt.grid(True)
+    plt.show()
+
+
+def drawEphem_allcatalog(catalog, ephem, number = 0):
+    ''' Создание графиков эволюции эфемериды на протяжении полученного каталога
+    
+    catalog -- каталог ТЛЕ
+    ephem --   название той эфемериды, что нам надо
+    number --  номер данных в каталоге (по умолчанию 0)
+    '''
+        
+    val = []
+    for numsat in range(0, len(catalog.line1)):
+        line1 = catalog.line1[numsat]
+        line2 = catalog.line2[numsat]
+        sat = twoline2rv(line1, line2, wgs72)
+
+        dT = (catalog.JD[numsat] - catalog.JD[number]) * 24 * 60
+
+        x1, v1 = sgp4(sat, dT)
+        
+        orbit = KeplerOrbit()
+        orbit.xyz2ephem(x1[0], x1[1], x1[2], v1[0], v1[1], v1[2])
+    
+        val.append(orbit.get_ephem(ephem))
+
+    plt.plot(val, 'r-')
+    plt.plot(val, 'k+')
+
+    plt.plot(number, 0, 'k^')
+
+    plt.xlabel('Epoсh')
+    plt.ylabel('Ephemeris')
+    plt.title(catalog.name[1])
+    plt.grid(True)
+    plt.show()
+
+
 def _testSGP():
     ''' Тестируем чтение информации по ИСЗ + вычисление координат
     '''
@@ -436,6 +492,11 @@ def _testDraw():
     drawShort_ephem(catalog, 'a')
     drawLong_ephem(catalog, 'a')
     drawLong_ephem(catalog, 'a', 10)
+    
+    print('Эволюция параметров орбиты (на месяц):')
+    dT = range(0, 30, 1)
+    drawEphem_oneSat(catalog, 'a', dT)
+    drawEphem_allcatalog(catalog, 'a')
 
 
 if __name__ == "__main__":
