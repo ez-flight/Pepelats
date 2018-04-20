@@ -22,9 +22,12 @@
 
 # обработать исключение, если задано несуществующее имя ИСЗ!!!!
 
-
 from sgp4.earth_gravity import wgs72
 from sgp4.io import twoline2rv
+from sgp4.propagation import sgp4
+
+from datetime import datetime
+from datetime import timedelta
 
 
 class CatalogTLE:
@@ -37,6 +40,7 @@ class CatalogTLE:
         self.line1  = []
         self.line2  = []
         self.JD     = []
+        self.time   = []
 
 
     def readTLEsat(self, catalog_file, SatName):
@@ -70,14 +74,14 @@ class CatalogTLE:
                 self.line1.append(l1)
                 self.line2.append(l2)
                 self.JD.append(self.calcJD(l1))
-  
- 
- 
+                self.time.append(self.calcTime(l1))
+
+
     def readFullTLE(self, catalog_file):
         ''' Полное чтение каталога TLE
-        '''    
+        '''
         f = open(catalog_file, 'r')
-    
+
         print(' ');
         print('Полное чтение каталога:');
     
@@ -94,6 +98,7 @@ class CatalogTLE:
             self.line1.append(l1)
             self.line2.append(l2)
             self.JD.append(self.calcJD(l1))
+            self.time.append(self.calcTime(l1))
 
 
     def getName(self, num):
@@ -126,13 +131,13 @@ class CatalogTLE:
     def calcJD(self, line_str):
         ''' По данным первой строки вычисляет MJD привязки эфемерид спутника
         '''
-        year = float(line_str[19:20])
+        year = float(line_str[18:20])
         if year < 57:
-            year =+ 2000
+            year = year + 2000
         else:
-            year =+ 1900
+            year = year + 1900
 
-        n_day = float(line_str[21:32])
+        n_day = float(line_str[20:32])
 
         # юлианская дата на 1 января текущего года
         mon = 1
@@ -142,6 +147,61 @@ class CatalogTLE:
         JD = JD_0 + n_day
         
         return JD
+        
+        
+    def calcTime(self, line_str):
+        ''' По данным первой строки вычисляет питоновское время привязки эфемерид спутника
+        '''
+        year = float(line_str[18:20])
+
+        if year < 57:
+            year = year + 2000
+        else:
+            year = year + 1900
+
+        # дата на 1 января текущего года      mon = 1     day = 1
+        time_temp = datetime(int(year), 1, 1)
+
+        # время, прошедшее с первого января
+        d_time = timedelta(float(line_str[21:32]))
+
+        time = time_temp + d_time
+
+        return time
+
+
+    def calcXYZ(self, name, time):
+        '''  Вычисление прямоугольных координат.
+             на выходе:
+             -- кординаты аппарата
+             -- скорости
+             -- номер использованных эфемерид в каталоге
+             -- длительность экстраполяции (в минутах)
+        '''
+
+        # поиск ближайшего ИСЗ к этому моменту времени
+        d_since = 1e+10
+        num = -1
+        for i in range(0, len(self.time)):
+
+            if  self.name[i].find(name) == -1:   # не тот спутник, пропускаем
+                continue
+
+            d_day = time - self.time[i]
+            d_sinceNew = d_day.days *24*60 + d_day.seconds /60
+
+            if  (abs(d_sinceNew) < abs(d_since)):  # более свежие эфемериды
+                num = i
+                d_since = d_sinceNew
+
+        line1 = self.line1[num]
+        line2 = self.line2[num]
+
+        satellite = twoline2rv(line1, line2, wgs72)
+        #    position, velocity = satellite.propagate(2016, 6, 30, 12, 0, 0)
+        position, velocity = sgp4(satellite, d_since)
+
+        return position, velocity, num, d_since
 
 
     def status(self):
@@ -152,9 +212,10 @@ class CatalogTLE:
         # вывести время привязки первого и последней записи в каталоге!!!
         
         print('Аппарат:', self.name[1] );
-        
+        print(self.time[1]);
+        print(self.time[-1]);
         print('Данные за следующий временной интервал:', self.JD[1], ' -- ', self.JD[-1] );
-        
+
 
 def _test1():
     ''' Тестируем ReadFullTLE
@@ -167,7 +228,9 @@ def _test1():
     print(a);
     
     a.readFullTLE('catalogs/catalog_2016_06_30.txt')
-    
+
+    a.status()
+
     print(a.name[0])    
     print(a.line1[0])
     print(a.line2[0])
@@ -200,8 +263,30 @@ def _test2():
     print('Данные по ISS:')
     print(b.getLine1('ISS'))
     print(b.getLine2('ISS'))
+    
+    b.status()
         
+
+def _test3():
+    ''' тестируем точное вычисление координат по ближайшим эфемеридам
+    '''     
+    print(' Тест вычисления по ближайшим эфемеридам:')
+
+    b = CatalogTLE()
+    b.readTLEsat('catalogs/zarya_2018_01_01_15.txt', 'ISS')
+    
+    b.status()
+
+    date = datetime.strptime("15/01/18 15:30", "%d/%m/%y %H:%M")
+
+    position, velocity, num, d_since = b.calcXYZ('ISS', date)
+    
+    print(position)
+    print(d_since)    
+    print(num)    
+   
 
 if __name__=="__main__":
     _test1()
     _test2()
+    _test3()
