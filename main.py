@@ -8,12 +8,12 @@ import numpy as np
 class MainWindow(RubberSubFrame):
     def __init__(self, master=None, width=MAINWIDTH, height=MAINHEIGHT, bg="black"):
         RubberSubFrame.__init__(self, master, width=width, height=height,
-                                bg=bg, schema=Schema(0, 0, 16, 2))
+                                bg=bg, schema=Schema(0, 0, 3, 2))
         self.addMenu()
         self._panes = {}
-        self.addPane(Schema(0, 0, 1, 2), bg=ITEMCOLOR, name='navigation')
-        self.addPane(Schema(1, 0, 16, 2), bg=BASECOLOR, name='plot')
-        self.addPane(Schema(0, 3, 16, 1), bg=CONTROLCOLOR, name='control')
+        self.addPane(Schema(0, 3, 2, 1), bg=CONTROLCOLOR, name='control')
+        self.addPane(Schema(2, 3, 1, 1), bg=BASECOLOR, name='log')
+        self.addPane(Schema(0, 0, 3, 2), bg=BASECOLOR, name='plot')
 
     def addPane(self, schema, bg, name):
         width = self._width * schema._columns / self._columns
