@@ -25,6 +25,7 @@
 from sgp4.earth_gravity import wgs72
 from sgp4.io import twoline2rv
 from sgp4.propagation import sgp4
+import logging
 
 from datetime import datetime
 from datetime import timedelta
@@ -35,7 +36,8 @@ class CatalogTLE:
     def __init__(self):
         ''' Инициализация, создание пустых полей
         '''
-        print('readtle: инициализация')
+        self.logger = logging.getLogger('__main__.' + __name__ )
+        self.logger.info('readtle: инициализация')
         self.name   = []
         self.line1  = []
         self.line2  = []
@@ -82,13 +84,12 @@ class CatalogTLE:
         '''
         f = open(catalog_file, 'r')
 
-        print(' ');
-        print('Полное чтение каталога:');
+        self.logger.info('Полное чтение каталога:');
     
         while 1:
             line_name = f.readline()
             if len(line_name) == 0:
-                print('ReadFull: чтение завершено, объектов: ', len(self.line1));
+                self.logger.info('ReadFull: чтение завершено, объектов: %s' % len(self.line1));
                 f.close()
                 break
        
@@ -208,13 +209,13 @@ class CatalogTLE:
         ''' Выводит информацию о текущем состоянии каталога
         '''
         
-        print('Объектов в каталоге:', len(self.name));
+        self.logger.info('Объектов в каталоге:', len(self.name));
         # вывести время привязки первого и последней записи в каталоге!!!
         
-        print('Аппарат:', self.name[1] );
-        print(self.time[1]);
-        print(self.time[-1]);
-        print('Данные за следующий временной интервал:', self.JD[1], ' -- ', self.JD[-1] );
+        self.logger.info('Аппарат:', self.name[1] );
+        self.logger.info(self.time[1]);
+        self.logger.info(self.time[-1]);
+        self.logger.info('Данные за следующий временной интервал:', self.JD[1], ' -- ', self.JD[-1] );
 
 
 def _test1():
