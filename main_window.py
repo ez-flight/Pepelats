@@ -113,7 +113,7 @@ textbox = Text(root, font='Arial 12', wrap='word', width=25, height=10)
 label_sat1 = Label(root, text=" -- ", font='arial 10')
 label_sat2 = Label(root, text=" -- ", font='arial 10')
 
-list_ephem = Listbox(root, height=3, width=10, selectmode=SINGLE)
+list_ephem = Listbox(root, height=6, width=10, selectmode=SINGLE)
 list1=["a", "e", "i", "draco", "omega", "M_0"]
 for i in list1:
     list_ephem.insert(END,i)
@@ -123,6 +123,8 @@ btn_open = Button(root)
 btn_open['text'] = 'выбрать каталог'
 btn_open['command'] = btn_open_clicked
 
+
+# -------------------------------   короткие интервалы   ---------------------
 labelShort = Label(root, text="Короткие.", font='arial 12')
 
 btnShort_R = Button(root)
@@ -136,6 +138,9 @@ btnShort_3['command'] = btnShort_3_clicked
 btnShort_a = Button(root)
 btnShort_a['text'] = 'Граф.'
 btnShort_a['command'] = btnShort_ephem_clicked
+
+
+# -------------------------------   длинные интервалы   ---------------------
 
 labelLong = Label(root, text="Длинные:", font='arial 12')
 
@@ -155,27 +160,27 @@ btnLong_a['text'] = 'Граф.'
 btnLong_a['command'] = btnLong_ephem_clicked
 
 
-##                  РАСПОЛОЖЕНИЕ
-label_main.grid(row=0,      column=0, columnspan=5)
+# ------------------------------   РАСПОЛОЖЕНИЕ   --------------------------
+label_main.grid(  row=0,      column=0, columnspan=5)
 
-textbox.grid(   row=1,      column=0, rowspan=5)
+textbox.grid(     row=1,      column=0, rowspan=5)
 
-label_sat1.grid(row=1,      column=1)
-label_sat2.grid(row=2,      column=1)
-btn_open.grid(  row=3,      column=1)
-list_ephem.grid(row=4,      column=1)
+label_sat1.grid(  row=1,      column=1)
+label_sat2.grid(  row=2,      column=1)
+btn_open.grid(    row=3,      column=1)
+list_ephem.grid(  row=4,      column=1)
 
-labelShort.grid(row=1,      column=2)
-btnShort_R.grid(row=2,      column=2)
-btnShort_3.grid(row=3,      column=2)
-btnShort_a.grid(row=4,      column=2)
+labelShort.grid(  row=1,      column=2)
+btnShort_R.grid(  row=2,      column=2)
+btnShort_3.grid(  row=3,      column=2)
+btnShort_a.grid(  row=4,      column=2)
 
-scale_numsat.grid(row=1,    column=3, rowspan=5)
+scale_numsat.grid(row=1,      column=3, rowspan=5)
 
-labelLong.grid(row=1,      column=4)
-btnLong_R.grid( row=2,      column=4)
-btnLong_3.grid( row=3,      column=4)
-btnLong_a.grid( row=4,      column=4)
+labelLong.grid(   row=1,      column=4)
+btnLong_R.grid(   row=2,      column=4)
+btnLong_3.grid(   row=3,      column=4)
+btnLong_a.grid(   row=4,      column=4)
 
 
 root.protocol('WM_DELETE_WINDOW', close)
