@@ -1,4 +1,5 @@
 from abstractFrame import *
+from loghandler import *
 from config import *
 from readtle import CatalogTLE
 from tkinter.filedialog import askopenfilename
@@ -6,29 +7,30 @@ from tkinter.filedialog import askopenfilename
 import numpy as np
 import logging
 import logging.config
-import time
-import os
 
 class MainWindow(RubberSubFrame):
     def __init__(self, master=None, width=MAINWIDTH, height=MAINHEIGHT, bg="black"):
         RubberSubFrame.__init__(self, master, width=width, height=height,
                                 bg=bg, schema=Schema(0, 0, 3, 2))
-        self.addMenu()
         self._panes = {}
+        self.logtext = tk.StringVar()
+        self.addMenu()
         self.addPane(Schema(0, 3, 2, 1), bg=CONTROLCOLOR, name='control')
-        self.addPane(Schema(2, 3, 1, 1), bg=BASECOLOR, name='log')
+        self.addPane(Schema(2, 3, 1, 1), bg=CONTROLCOLOR, name='log')
         self.addPane(Schema(0, 0, 3, 2), bg=BASECOLOR, name='plot')
         self.makeLoggerView()
 
     def makeLoggerView(self):
-        self.logtext = tk.StringVar()
-        # logrec = logging.LogRecord('__main__.readtle', logging.INFO, '',
-                                   # msg=self.logtext)
+        # logrec = logging.LogRecord('__main__.readtle', logging.INFO,
+                                   # './readtle.py', 40,
+                                   # self.logtext, '', None)
         # ch.emit(logrec)
         self.LoggerView = tk.Message(self._panes['log'], bg=DARKCOLOR,
                                      fg=LOGTEXTCOLOR,
+                                     justify=tk.LEFT,
+                                     width=self._width / 3,
                                      textvariable=self.logtext)
-        self.LoggerView.grid(row=0, column=0, sticky='wesn', padx=20, pady=20)
+        self.LoggerView.grid(row=0, column=0, sticky='wesn', padx=5, pady=5)
         return self
 
     def addPane(self, schema, bg, name):
@@ -38,6 +40,7 @@ class MainWindow(RubberSubFrame):
                               bg=bg, schema=schema)
         pane.configure(bd=1)
         self._panes[name] = pane
+        # self.logtext.set(self.logtext.get() + '\n' +  name)
         return self
 
     def addMenu(self):
@@ -58,14 +61,14 @@ class MainWindow(RubberSubFrame):
         # self._workArea.setCatalog(self.catalog)
         return 1
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-logger.addHandler(ch)
 
 if __name__ == '__main__':
-    logger.info('start')
     root = tk.Tk()
     app = MainWindow(master=root)
     app.mainloop()
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    texthandler = LogMessage(app.LoggerView)
+    logger.addHandler(texthandler)
+    # logger.info('start')
 
