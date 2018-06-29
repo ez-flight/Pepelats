@@ -89,6 +89,7 @@ def calcShort_R(catalog):
     '''  Возвращает массив полных ошибок "коротких интервалов"
     '''
 
+    time = []
     sig = []
     for numsat in range(0, len(catalog.line1) - 1):
         # формирование массива данных рассчётов
@@ -105,10 +106,10 @@ def calcShort_R(catalog):
 
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
-
+        
+        time.append( (catalog.JD[numsat] - catalog.JD[0]) )
         sig.append(fullSigma(x1, x2))
-
-    return sig
+    return sig, time
 
 
 def calcLong_R(catalog, number = 0):
@@ -118,6 +119,7 @@ def calcLong_R(catalog, number = 0):
     line2 = catalog.line2[number]
     sat1 = twoline2rv(line1, line2, wgs72)
 
+    time = []
     sig = []
     for numsat in range(0, len(catalog.line1)):
         line1 = catalog.line1[numsat]
@@ -129,15 +131,16 @@ def calcLong_R(catalog, number = 0):
         x1, v1 = sgp4(sat1, dT)
         x2, v2 = sgp4(sat2, 0)
 
+        time.append( (catalog.JD[numsat] - catalog.JD[number]) )
         sig.append( fullSigma(x1, x2) )
-
-    return sig
+    return sig, time
 
 
 def calcShort_3(catalog):
     '''    Возвращает три массива орбитальных ошибок "коротких интервалов"
     '''
 
+    time = []
     sig1 = []
     sig2 = []
     sig3 = []
@@ -160,17 +163,19 @@ def calcShort_3(catalog):
 
         s1, s2, s3 = orbitSigma(x1, v1, x2, v2)
 
+        time.append( (catalog.JD[numsat] - catalog.JD[0]) )
         sig1.append( s1 )
         sig2.append( s2 )
         sig3.append( s3 )
 
-    return sig1, sig2, sig3
+    return sig1, sig2, sig3, time
 
 
 def calcLong_3(catalog, number = 0):
     ''' Возвращает три массива орбитальных ошибок "длинных интервалов"
     '''
     
+    time = []
     sig1 = []
     sig2 = []
     sig3 = []
@@ -191,17 +196,19 @@ def calcLong_3(catalog, number = 0):
 
         s1, s2, s3 = orbitSigma(x1, v1, x2, v2)
 
+        time.append( (catalog.JD[numsat] - catalog.JD[number]) )
         sig1.append( s1 )
         sig2.append( s2 )
         sig3.append( s3 )
 
-    return sig1, sig2, sig3
+    return sig1, sig2, sig3, time
 
 
 def calcShort_ephem(catalog, ephem):
     '''  Возвращает масиив ошибок по конкретному элементу орбиты
     '''
 
+    time = []
     sig = []
     for numsat in range(0, len(catalog.line1) - 1):
         # формирование массива данных рассчётов
@@ -221,9 +228,10 @@ def calcShort_ephem(catalog, ephem):
 
         s = ephemSigma(x1, v1, x2, v2, ephem)
 
+        time.append( (catalog.JD[numsat] - catalog.JD[0]) )
         sig.append(s)
 
-    return sig
+    return sig, time
     
 
 def calcLong_ephem(catalog, ephem, number = 0):
@@ -234,6 +242,7 @@ def calcLong_ephem(catalog, ephem, number = 0):
     line2 = catalog.line2[number]
     sat1 = twoline2rv(line1, line2, wgs72)
 
+    time = []
     sig = []
     for numsat in range(0, len(catalog.line1)):
         line1 = catalog.line1[numsat]
@@ -247,19 +256,20 @@ def calcLong_ephem(catalog, ephem, number = 0):
 
         s = ephemSigma(x1, v1, x2, v2, ephem)
 
+        time.append( (catalog.JD[numsat] - catalog.JD[number]) )
         sig.append( s )
 
-    return sig
+    return sig, time
 
 
 def drawShort_R(catalog):
     '''  Создание графиков для коротких интервалов
     '''
     
-    sig = calcShort_R(catalog)
+    sig, time = calcShort_R(catalog)
 
-    plt.plot(sig, 'r-')
-    plt.plot(sig, 'k+')
+    plt.plot(time, sig, 'r-')
+    plt.plot(time, sig, 'k+')
 
     plt.xlabel('Epoсh')
     plt.ylabel(r'$\Delta R$')
@@ -272,12 +282,12 @@ def drawLong_R(catalog, number = 0):
     ''' Создание графиков "длинных" интервалов
     '''
     
-    sig = calcLong_R(catalog, number)
+    sig, time = calcLong_R(catalog, number)
 
-    plt.plot(sig, 'b-')
-    plt.plot(sig, 'k+')
+    plt.plot(time, sig, 'b-')
+    plt.plot(time, sig, 'k+')
 
-    plt.plot(number, 0, 'k^')
+    plt.plot(0, 0, 'k^')
 
     plt.xlabel('Epoсh')
     plt.ylabel(r'$\Delta R$')
@@ -290,15 +300,15 @@ def drawShort_3(catalog):
     '''  Создание графиков орбитальных ошибок для коротких интервалов
     '''
 
-    sig1, sig2, sig3 = calcShort_3(catalog)
+    sig1, sig2, sig3, time = calcShort_3(catalog)
 
-    plt.plot(sig1, 'b-')
-    plt.plot(sig2, 'r-')
-    plt.plot(sig3, 'g-')
+    plt.plot(time, sig1, 'b-')
+    plt.plot(time, sig2, 'r-')
+    plt.plot(time, sig3, 'g-')
 
-    plt.plot(sig1, 'k+')
-    plt.plot(sig2, 'k+')
-    plt.plot(sig3, 'k+')
+    plt.plot(time, sig1, 'k+')
+    plt.plot(time, sig2, 'k+')
+    plt.plot(time, sig3, 'k+')
 
     plt.legend( ("radial", "in-track", "cross-track"), loc='upper left' )
 
@@ -313,19 +323,19 @@ def drawLong_3(catalog, number = 0):
     ''' Графики орбитальных для длинных интервалов
     '''
     
-    sig1, sig2, sig3 = calcLong_3(catalog, number)   
+    sig1, sig2, sig3, time = calcLong_3(catalog, number)   
 
-    plt.plot(sig1, 'b-')
-    plt.plot(sig2, 'r-')
-    plt.plot(sig3, 'g-')
+    plt.plot(time, sig1, 'b-')
+    plt.plot(time, sig2, 'r-')
+    plt.plot(time, sig3, 'g-')
 
-    plt.plot(sig1, 'k+')
-    plt.plot(sig2, 'k+')
-    plt.plot(sig3, 'k+')
+    plt.plot(time, sig1, 'k+')
+    plt.plot(time, sig2, 'k+')
+    plt.plot(time, sig3, 'k+')
     
     plt.legend( ("radial", "in-track", "cross-track"), loc='upper left' )
 
-    plt.plot(number, 0, 'k^')
+    plt.plot(0, 0, 'k^')
 
     plt.xlabel('Epoсh');
     plt.ylabel(r'$\Delta [km]$');
@@ -338,10 +348,10 @@ def drawShort_ephem(catalog, ephem):
     '''  Создание графиков для коротких интервалов по элементу орбиты
     '''
 
-    sig = calcShort_ephem(catalog, ephem)
+    sig, time = calcShort_ephem(catalog, ephem)
 
-    plt.plot(sig, 'r-')
-    plt.plot(sig, 'k+')
+    plt.plot(time, sig, 'r-')
+    plt.plot(time, sig, 'k+')
 
     plt.xlabel('Epoсh');
     plt.ylabel(r'$\Delta Ephemeris$');         # СДЕЛАТЬ отображение конкретного элемента орбиты!!!!
@@ -354,12 +364,12 @@ def drawLong_ephem(catalog, ephem, number = 0):
     ''' Создание графиков "длинных" интервалов для элемента орбиты
     '''
     
-    sig = calcLong_ephem(catalog, ephem, number)
+    sig, time = calcLong_ephem(catalog, ephem, number)
 
-    plt.plot(sig, 'b-')
-    plt.plot(sig, 'k+')
+    plt.plot(time, sig, 'b-')
+    plt.plot(time, sig, 'k+')
 
-    plt.plot(number, 0, 'k^')
+    plt.plot(0, 0, 'k^')
 
     plt.xlabel('Epoсh')
     plt.ylabel(r'$\Delta Ephemeris$')
@@ -381,23 +391,22 @@ def drawEphem_oneSat(catalog, ephem, dT, number = 0):
     line2 = catalog.line2[number]
     sat1 = twoline2rv(line1, line2, wgs72)
 
+    time = []
     val = []
     for t in dT:
         x1, v1 = sgp4(sat1, t /24/60)
 
         orbit = KeplerOrbit()
         orbit.xyz2ephem(x1[0], x1[1], x1[2], v1[0], v1[1], v1[2])
-        
+
+        time.append(t);        
         val.append( orbit.get_ephem(ephem) )
 
    
     sig = calcLong_ephem(catalog, ephem, number)
 
-    plt.plot(val, 'c-')
-    plt.plot(val, 'k+')
-
-#    plt.plot(number, 0, 'k^')                      # !!!!!!!!!!!!!!!!!!!!!!!!!!!
-    #   ПЕРЕВЕСТИ ВСЕ ГРАФИКИ НА ВРЕМЯ ПО ОСИ Х !!!
+    plt.plot(time, val, 'c-')
+    plt.plot(time, val, 'k+')
 
     plt.xlabel('Epoсh (day)')
     plt.ylabel('Ephemeris')
@@ -406,7 +415,7 @@ def drawEphem_oneSat(catalog, ephem, dT, number = 0):
     plt.show()
 
 
-def drawEphem_allcatalog(catalog, ephem, number = 0):
+def drawEphem_allcatalog(catalog, ephem):
     ''' Создание графиков эволюции эфемериды на протяжении полученного каталога
     
     catalog -- каталог ТЛЕ
@@ -414,25 +423,26 @@ def drawEphem_allcatalog(catalog, ephem, number = 0):
     number --  номер данных в каталоге (по умолчанию 0)
     '''
         
+    time = []
     val = []
     for numsat in range(0, len(catalog.line1)):
         line1 = catalog.line1[numsat]
         line2 = catalog.line2[numsat]
         sat = twoline2rv(line1, line2, wgs72)
 
-        dT = (catalog.JD[numsat] - catalog.JD[number]) * 24 * 60
+        dT = (catalog.JD[numsat] - catalog.JD[0]) * 24 * 60
 
         x1, v1 = sgp4(sat, dT)
         
         orbit = KeplerOrbit()
         orbit.xyz2ephem(x1[0], x1[1], x1[2], v1[0], v1[1], v1[2])
+        
+        time.append( catalog.JD[numsat] - catalog.JD[0] )
     
         val.append(orbit.get_ephem(ephem))
 
-    plt.plot(val, 'r-')
-    plt.plot(val, 'k+')
-
-    plt.plot(number, 0, 'k^')
+    plt.plot(time, val, 'r-')
+    plt.plot(time, val, 'k+')
 
     plt.xlabel('Epoсh')
     plt.ylabel('Ephemeris')
